@@ -62,9 +62,7 @@ def on_message(client, userdata, message):
         pluvialidad = datos['pluvialidad']
         
         # Insertar datos en la base de datos
-        insert_data(estacion_id, fecha, temperatura,
-                     humedad, presion, velocidad_viento, direccion_viento,
-                       pluvialidad)
+        insert_data(estacion_id, fecha, temperatura,humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
     except json.JSONDecodeError as e:
         print(f"Error al decodificar el mensaje: {e}")
     except KeyError as e:
@@ -72,7 +70,7 @@ def on_message(client, userdata, message):
 
 
 # Configuración del cliente MQTT
-client = mqtt.Client()
+client = mqtt.Client(protocol=mqtt.MQTTv311)
 client.on_connect = on_connect
 client.on_message = on_message
 
