@@ -18,13 +18,13 @@ client.connect(broker_address, broker_port)
 def generar_datos(maquina_id):
     datos = {
         "id": maquina_id,
-        "fecha" : datetime.now(), 
+        "fecha" : str(datetime.now()), 
         "temperatura": round(random.uniform(20.0, 40), 2),
         "presion": round(random.uniform(1000,1020), 2),
         "Velocidad": round(random.uniform(0, 70), 2),
         "Direccion": round(random.uniform(0,360),2),
-        "humedad" : round(random.uniform(50,100)),
-        "pluvialidad" : round(random.uniform(3,5))
+        "humedad" : round(random.uniform(50,100),2),
+        "pluvialidad" : round(random.uniform(3,5),2)
     }
     return datos
 
