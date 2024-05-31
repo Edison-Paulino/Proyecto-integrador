@@ -17,7 +17,7 @@ client.connect(broker_address, broker_port)
 # Función para generar datos aleatorios
 def generar_datos(maquina_id):
     datos = {
-        "id": maquina_id,
+        "estacion_id": maquina_id,
         "fecha" : str(datetime.now()), 
         "temperatura": round(random.uniform(20.0, 40), 2),
         "presion": round(random.uniform(1000,1020), 2),
