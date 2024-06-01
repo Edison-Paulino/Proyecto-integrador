@@ -8,16 +8,16 @@ broker_address = "test.mosquitto.org"
 broker_port = 1883
 topic_root = "estacion/#"
 
-
 # Configuacion de la base de datos
 db_config = {
-    'user' : 'root',
-    'password' : 'Joze.0404',
+    'user' : 'grupo1',
+    'password' : 'grupo1',
     'host' : '192.168.100.151',
     'database' : 'estaciones_meteorologicas'
 }
 
 def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad):
+    conneccion = None
     try: 
         conneccion = mysql.connector.connect(**db_config)
         if conneccion.is_connected():
@@ -29,13 +29,11 @@ def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion
             conneccion.commit()
             print("Datos insertados correctamente.")
     except Error as e:
-        conneccion.commit()
         print(f"Error al conectar con MySQL: {e}")
     finally:
-        if conneccion.is_connected():
+        if conneccion is not None and conneccion.is_connected():
             cursor.close()
             conneccion.close()
-
 
 # Callback cuando se conecta al broker
 def on_connect(client, userdata, flags, rc):
@@ -67,7 +65,6 @@ def on_message(client, userdata, message):
         print(f"Error al decodificar el mensaje: {e}")
     except KeyError as e:
         print(f"Clave faltante en el JSON: {e}")
-
 
 # Configuración del cliente MQTT
 client = mqtt.Client(protocol=mqtt.MQTTv311)
