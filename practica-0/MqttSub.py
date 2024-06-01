@@ -8,7 +8,7 @@ broker_address = "test.mosquitto.org"
 broker_port = 1883
 topic_root = "estacion/#"
 
-# Configuacion de la base de datos
+# Configuración de la base de datos
 db_config = {
     'user' : 'grupo1',
     'password' : 'grupo1',
@@ -18,12 +18,12 @@ db_config = {
 
 def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad):
     conneccion = None
-    try: 
+    try:
         conneccion = mysql.connector.connect(**db_config)
         if conneccion.is_connected():
             cursor = conneccion.cursor()
-            sql = """INSERT INTO Mediciones 
-                     (estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)  
+            sql = """INSERT INTO datos_estacion 
+                     (IdEstacion, Fecha, Temperatura, Humedad, Presion, Velocidad_Viento, Direccion_Viento, Pluvialidad)  
                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql, (estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad))
             conneccion.commit()
@@ -60,7 +60,7 @@ def on_message(client, userdata, message):
         pluvialidad = datos['pluvialidad']
         
         # Insertar datos en la base de datos
-        insert_data(estacion_id, fecha, temperatura,humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
+        insert_data(estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
     except json.JSONDecodeError as e:
         print(f"Error al decodificar el mensaje: {e}")
     except KeyError as e:
