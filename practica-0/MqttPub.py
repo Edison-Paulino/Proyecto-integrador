@@ -32,7 +32,7 @@ def generar_datos(maquina_id):
 def publicar_datos():
     num_maquinas = 5
     while True:
-        for maquina_id in range(101, num_maquinas+100):
+        for maquina_id in range(1, num_maquinas+100):
             datos = generar_datos(maquina_id)
             topic = topic_root+str(maquina_id)+topic_root2
             client.publish(topic, json.dumps(datos))
