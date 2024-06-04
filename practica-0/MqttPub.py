@@ -32,9 +32,9 @@ def generar_datos(maquina_id):
 def publicar_datos():
     num_maquinas = 5
     while True:
-        for maquina_id in range(101, num_maquinas+100):
+        for maquina_id in range(101, 101 + num_maquinas):
             datos = generar_datos(maquina_id)
-            topic = topic_root+str(maquina_id)+topic_root2
+            topic = topic_root + str(maquina_id) + topic_root2
             client.publish(topic, json.dumps(datos))
             print(f"Publicado en {topic}: {datos}")
         time.sleep(1)  # Espera 1 segundos antes de generar los próximos datos
