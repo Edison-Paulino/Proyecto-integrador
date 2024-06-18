@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Datos Estación</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .step-links a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: blue;
+        }
+        .step-links .current {
+            margin: 0 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datos de las Estaciones (Andrys y Edison)</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Estación ID</th>
+                <th>Temperatura</th>
+                <th>Presión</th>
+                <th>Velocidad del Viento</th>
+                <th>Dirección del Viento</th>
+                <th>Humedad</th>
+                <th>Pluvialidad</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody id="datos-table-body">
+            {% for dato in page_obj %}
+            <tr>
+                <td>{{ dato.IdEstacion }}</td>
+                <td>{{ dato.Temperatura }}</td>
+                <td>{{ dato.Presion }}</td>
+                <td>{{ dato.Velocidad_Viento }}</td>
+                <td>{{ dato.Direccion_Viento }}</td>
+                <td>{{ dato.Humedad }}</td>
+                <td>{{ dato.Pluvialidad }}</td>
+                <td>{{ dato.Fecha }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; primero</a>
+                <a href="?page={{ page_obj.previous_page_number }}">anterior</a>
+            {% endif %}
+
+            <span class="current">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">siguiente</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">última &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <button onclick="location.reload()">Refrescar</button>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:6789/ws/datos/');
+        ws.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const tableBody = document.getElementById('datos-table-body');
+            const newRow = `<tr>
+                <td>${data.IdEstacion}</td>
+                <td>${data.Temperatura}</td>
+                <td>${data.Presion}</td>
+                <td>${data.Velocidad_Viento}</td>
+                <td>${data.Direccion_Viento}</td>
+                <td>${data.Humedad}</td>
+                <td>${data.Pluvialidad}</td>
+                <td>${data.Fecha}</td>
+            </tr>`;
+            tableBody.insertAdjacentHTML('afterbegin', newRow);
+        };
+    </script>
+</body>
+</html>
