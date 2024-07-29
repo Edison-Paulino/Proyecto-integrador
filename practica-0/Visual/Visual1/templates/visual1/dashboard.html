@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Principal</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'visual1/styles.css' %}">
+    <style>
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #0E3761;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            height: 100%;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #FFFFFF;
+            text-decoration: none;
+        }
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #0E447B;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+	    color: #FFFFFF;
+        }
+        .header {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        .grid-item {
+            background-color: #0E3761;
+	    color: #FFFFFF
+            border: 1px solid #ddd;
+            padding: 20px;
+            text-align: center;
+        }
+        .grid-item.add {
+            background-color: #e0f7fa;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a>MI PERFIL</a>
+        <a href="{% url 'dashboard' %}" class="active">INICIO</a>
+        <a href="{% url 'alerts' %}">ALERTAS{% if alerts %} <span class="badge">!</span>{% endif %}</a>
+        <a href="{% url 'export' %}">EXPORTAR</a>
+        <a href="{% url 'logout' %}">SALIR</a>
+    </div>
+    <div class="main-content">
+        <div class="header">Resumen de lecturas:</div>
+        <div class="grid-container">
+            {% for station in stations %}
+            <div class="grid-item">{{ station.name }}</div>
+            {% endfor %}
+            <div class="grid-item add">+</div>
+        </div>
+    </div>
+</body>
+</html>
+

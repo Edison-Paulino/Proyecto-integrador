@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+     {% load static %}
+    <link rel="stylesheet" href="{% static 'visual1/styles.css' %}">
+</head>
+<body>
+    <div class="login-container">
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <h2>INICIAR SESIÓN</h2>
+            <div class="input-group">
+                <input type="text" name="username" id="username" placeholder="Nombre de usuario" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" id="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit">ENTRAR</button>
+          
+            <a href="{% url 'register' %}" class="create-account">Crear Cuenta</a>
+        </form>
+    </div>
+</body>
+</html>

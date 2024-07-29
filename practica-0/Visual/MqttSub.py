@@ -11,7 +11,7 @@ from asgiref.sync import async_to_sync
 # Configuración del broker MQTT
 broker_address = "test.mosquitto.org"
 broker_port = 1883
-topic_root = "estacion/#"
+topic_root = "estacion_g1/#"
 
 # Configuración de la base de datos
 db_config = {
