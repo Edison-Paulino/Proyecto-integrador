@@ -1,12 +1,13 @@
 import paho.mqtt.client as mqtt
 import json
-import mysql.connector
-from mysql.connector import Error
+import pymysql
+from pymysql import OperationalError
 import asyncio
 import django
 import os
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from datetime import datetime
 
 # Configuración del broker MQTT
 broker_address = "test.mosquitto.org"
@@ -36,40 +37,86 @@ def on_connect(client, userdata, flags, rc):
 # Callback cuando se recibe un mensaje
 def on_message(client, userdata, message):
     try:
-        datos = json.loads(message.payload.decode("utf-8"))
-        print(f"Datos recibidos del tópico {message.topic}: {datos}")
+        if not message.payload:
+            return  # No hacer nada si el mensaje está vacío
 
+        datos = json.loads(message.payload.decode("utf-8"))
+        
         # Extraer datos del JSON
         estacion_id = datos['idestacion']
         fecha = datos['fecha']
-        temperatura = datos['temperatura']
-        humedad = datos['humedad']
-        presion = datos['presion']
-        velocidad_viento = datos['velocidad_viento']
-        direccion_viento = datos['direccion_viento']
-        pluvialidad = datos['pluvialidad']
-        
-        # Insertar datos en la base de datos
-        insert_data(estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
+
+        # Verificar si el dato ya existe en la base de datos
+        if not dato_ya_existe(estacion_id, fecha):
+            # Formatear los datos en JSON con indentación
+            datos_formateados = json.dumps(datos, indent=4)
+            
+            # Crear una salida formateada
+            salida = f"""
+            Datos recibidos del tópico {message.topic}:
+            {datos_formateados}
+            """
+            
+            # Imprimir la salida
+            print(salida)
+            
+            temperatura = datos['temperatura']
+            humedad = datos['humedad']
+            presion = datos['presion']
+            velocidad_viento = datos['velocidad_viento']
+            direccion_viento = datos['direccion_viento']
+            pluvialidad = datos['pluvialidad']
+
+            print("Insertando datos:")
+            
+            # Insertar datos en la base de datos
+            insert_data(estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
+        else:
+            ## Publicar mensajes vacíos para limpiar los retenidos
+            """print(f"El dato para la estación {estacion_id} con fecha {fecha} ya existe en la base de datos.")"""
+            topics = ["estacion_g1/101/sensores_g1", "estacion_g1/102/sensores_g1", "estacion_g1/103/sensores_g1", "estacion_g1/104/sensores_g1", "estacion_g1/105/sensores_g1"]
+            for topic in topics:
+                client.publish(topic, payload=None, retain=True)
+
     except json.JSONDecodeError as e:
         print(f"Error al decodificar el mensaje: {e}")
     except KeyError as e:
         print(f"Clave faltante en el JSON: {e}")
+    except ValueError as e:
+        print(f"Error en el formato de fecha: {e}")
+
+# Función para verificar si el dato ya existe en la base de datos
+def dato_ya_existe(estacion_id, fecha):
+    connection = None
+    try:
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        sql = "SELECT COUNT(*) FROM datos_estacion WHERE IdEstacion = %s AND Fecha = %s"
+        cursor.execute(sql, (estacion_id, fecha))
+        result = cursor.fetchone()
+        return result[0] > 0
+    except OperationalError as e:
+        print(f"Error al conectar con MySQL: {e}")
+        return False
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
 
 # Función para insertar datos en la base de datos y notificar a través de WebSocket
 def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad):
     connection = None
     try:
-        connection = mysql.connector.connect(**db_config)
-        if connection.is_connected():
+        connection = pymysql.connect(**db_config)
+        if connection:
             cursor = connection.cursor()
-            sql = """INSERT INTO datos_estacion 
-                     (IdEstacion, Fecha, Temperatura, Humedad, Presion, Velocidad_Viento, Direccion_Viento, Pluvialidad)  
+            sql = """INSERT INTO datos_estacion
+                     (IdEstacion, Fecha, Temperatura, Humedad, Presion, Velocidad_Viento, Direccion_Viento, Pluvialidad)
                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql, (estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad))
             connection.commit()
             print("Datos insertados correctamente.")
-            
+
             # Datos para notificación WebSocket
             data = {
                 'estacion_id': estacion_id,
@@ -91,10 +138,12 @@ def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion
                     'data': data,
                 }
             )
-    except Error as e:
+    except OperationalError as e:
         print(f"Error al conectar con MySQL: {e}")
+    except pymysql.MySQLError as e:
+        print(f"Error en la operación de MySQL: {e}")
     finally:
-        if connection is not None and connection.is_connected():
+        if connection:
             cursor.close()
             connection.close()
 
@@ -106,7 +155,7 @@ client.on_message = on_message
 # Conectar al broker MQTT
 client.connect(broker_address, broker_port)
 
-# Ejecutar el bucle de MQTT en un hilo separado
+# Asegurarse de recibir mensajes retenidos
 client.loop_start()
 
 # Mantener el script en ejecución

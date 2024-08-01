@@ -7,8 +7,8 @@ from datetime import datetime
 # Configuración del broker MQTT
 broker_address = "test.mosquitto.org"
 broker_port = 1883
-topic_root = "estacion/"
-topic_root2 = "/sensores"
+topic_root = "estacion_g1/"
+topic_root2 = "/sensores_g1"
 
 # Configuración del cliente MQTT
 client = mqtt.Client(protocol=mqtt.MQTTv311)
@@ -35,9 +35,9 @@ def publicar_datos():
         for maquina_id in range(101, 101 + num_maquinas):
             datos = generar_datos(maquina_id)
             topic = topic_root + str(maquina_id) + topic_root2
-            client.publish(topic, json.dumps(datos))
+            client.publish(topic, json.dumps(datos),0,True)
             print(f"Publicado en {topic}: {datos}")
-        time.sleep(1)  # Espera 1 segundos antes de generar los próximos datos
+        time.sleep(3)  # Espera 1 segundos antes de generar los próximos datos
 
 # Ejecución del publicador
 if __name__ == "__main__":
