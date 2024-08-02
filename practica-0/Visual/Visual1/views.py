@@ -86,9 +86,9 @@ def alerts_view(request):
     return render(request, 'visual1/alerts.html', {'alerts': []})
 
 
-#@login_required
-#def export_view(request):
-#   return render(request, 'visual1/export.html')
+@login_required
+def export_view(request):
+   return render(request, 'visual1/export.html')
 
 
 def logout_view(request):
