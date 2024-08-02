@@ -9,11 +9,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #FFFFFF
+    color: #FFFFFF;
 }
 
 .login-container {
-    width: 40%
+    width: 40%;
     max-width: 400px;
     margin: 100px auto;
     background: rgba(3, 23, 50, 1);

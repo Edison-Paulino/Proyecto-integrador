@@ -1,7 +1,18 @@
 from django.db import models
 
+class Estacion(models.Model):
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'estacion'
+        verbose_name = 'Estación'
+        verbose_name_plural = 'Estaciones'
+
+    def __str__(self):
+        return self.nombre
+
 class DatosEstacion(models.Model):
-    IdEstacion = models.IntegerField()
+    IdEstacion = models.ForeignKey(Estacion, on_delete=models.CASCADE)
     Temperatura = models.FloatField()
     Presion = models.FloatField()
     Velocidad_Viento = models.FloatField()
@@ -16,5 +27,4 @@ class DatosEstacion(models.Model):
         verbose_name_plural = 'Datos de Estaciones'
 
     def __str__(self):
-        return f"Estación {self.IdEstacion} - Fecha {self.Fecha}"
-
+        return f"Estación {self.IdEstacion.nombre} - Fecha {self.Fecha}"

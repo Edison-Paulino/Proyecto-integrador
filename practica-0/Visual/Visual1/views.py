@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import DatosEstacion
+from .models import DatosEstacion, Estacion  # Asegúrate de tener un modelo Estacion
 from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.decorators import login_required
@@ -62,10 +62,16 @@ def register_view(request):
 
 @login_required
 def dashboard_view(request):
-    # Aquí podrías obtener datos de estaciones y alertas desde la base de datos
-    # Por ejemplo, stations = Station.objects.all() para obtener todas las estaciones
+    stations = Estacion.objects.all()  # Obtener todas las estaciones
+    station_data = []
+    for station in stations:
+        count = DatosEstacion.objects.filter(IdEstacion=station.id).count()
+        station_data.append({
+            'name': station.nombre,
+            'count': count
+        })
     context = {
-        'stations': [],  # Reemplaza con la lista de estaciones
+        'stations': station_data,
         'alerts': True,  # Lógica para determinar si hay alertas no leídas
     }
     return render(request, 'visual1/dashboard.html', context)
@@ -88,3 +94,4 @@ def export_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
