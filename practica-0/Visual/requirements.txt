@@ -1,4 +1,0 @@
-django==5.0.6
-channels==4.0.0
-paho-mqtt==1.6.1
-mysql-connector-python==8.0.29
