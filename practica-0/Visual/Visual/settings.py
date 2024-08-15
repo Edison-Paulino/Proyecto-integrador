@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'Visual.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'estaciones_meteorologicas',
+        'USER': 'grupo1',
+        'PASSWORD': 'grupo1',
+        'HOST': '192.168.100.151',
+        'PORT': '3306',
     }
 }
 
