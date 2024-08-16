@@ -22,7 +22,7 @@ db_config = {
 }
 
 # Inicializar Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Visual.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Visual.Visual.settings')
 django.setup()
 
 # Callback cuando se conecta al broker
