@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-&8npgkcmam7q)&a!n3m_kxr3_m1xo)1wg7!jp#r%=kd7@8bj_k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['itt363-1.smar.com.do', '190.113.70.100', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.100.151','itt363-1.smar.com.do', "127.0.0.1", "localhost", "*"]
 
 
 # Application definition
@@ -105,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santo_Domingo'
 
 USE_I18N = True
 
@@ -115,7 +116,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+
+STATIC_URL = '/static/'  # URL para acceder a los archivos estáticos
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')  # Ruta donde se almacenarán los archivos
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://itt363-1.smar.com.do',
+    "http://127.0.0.1:8000"
+    # Add other trusted origins if needed
+]
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
