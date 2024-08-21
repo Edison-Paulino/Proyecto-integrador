@@ -28,18 +28,42 @@
             font-size: 24px;
             margin-bottom: 20px;
         }
+        .input-icon {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-icon img {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            opacity: 0.7;
+        }
+        .register-container label {
+            color: #fff; /* Color blanco para los labels */
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            font-size: 14px;
+        }
         .register-container input[type="text"],
         .register-container input[type="password"],
         .register-container input[type="email"] {
             width: 100%;
             padding: 12px;
+            padding-left: 45px;
             margin: 0;
             border-radius: 25px;
             background-color: #12273D;
-            color: #fff;
+            color: #fff; /* Color blanco para el texto */
             border: none;
             outline: none;
             box-sizing: border-box;
+        }
+        .register-container input::placeholder {
+            color: #7A8A99;
         }
         .register-container button {
             width: 100%;
@@ -74,11 +98,25 @@
         <h2>CREAR CUENTA</h2>
         <form method="POST">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="input-icon">
+                <label for="username">Username:</label>
+                <img src="https://img.icons8.com/ios-glyphs/30/ffffff/user.png" alt="Nombre Icon">
+                <input type="text" id="username" name="username" placeholder="Nombre" required>
+            </div>
+            <div class="input-icon">
+                <label for="email">Email address:</label>
+                <img src="https://img.icons8.com/ios-glyphs/30/ffffff/new-post.png" alt="Correo Icon">
+                <input type="email" id="email" name="email" placeholder="Correo electrónico" required>
+            </div>
+            <div class="input-icon">
+                <label for="password">Password:</label>
+                <img src="https://img.icons8.com/ios-glyphs/30/ffffff/lock.png" alt="Contraseña Icon">
+                <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            </div>
             <button type="submit">CREAR</button>
         </form>
         <div class="login-link">
-            <a href="/login/">INICIAR SESIÓN</a>
+            <a href="/login/">INICIAR SESIÓN</a> <!-- Enlace para redirigir a la página de login -->
         </div>
     </div>
 </body>
