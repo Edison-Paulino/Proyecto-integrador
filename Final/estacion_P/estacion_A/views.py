@@ -4,4 +4,4 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def index(request):
-    return HttpResponse("¡Página de inicio funcionando correctamente!")
+    return HttpResponse("¡HOLA MMG Página de inicio funcionando correctamente!")
