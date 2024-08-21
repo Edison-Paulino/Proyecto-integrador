@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
+from .models import DatosEstacion
 
 def login_view(request):
     error_message = None
@@ -39,4 +40,8 @@ def register_view(request):
 
 @login_required 
 def panel_view(request):
-    return render(request, 'gen_me.html')
+     # Obtener todos los datos de la tabla DatosEstacion
+    datos = DatosEstacion.objects.all()  # Aquí obtienes todos los datos de la tabla
+    
+    # Pasar los datos a la plantilla
+    return render(request, 'gen_me.html', {'datos': datos})

@@ -14,6 +14,7 @@
             align-items: stretch;
             height: 100vh;
             margin: 0;
+            color: white;
         }
         .sidebar {
             background-color: #0B1E35;
@@ -42,18 +43,47 @@
         .sidebar .active {
             background-color: #33537A;
         }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            margin-left: 30px;  /* Agregamos más espacio entre la barra lateral y el contenido */
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #fff;
+            background-color: #12273D;  /* Fondo oscuro para la tabla */
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #223C60;
+            color: white;
+        }
+        tr:hover {
+            background-color: #33537A;
+        }
+        td {
+            border: 1px solid #33537A;  /* Bordes más visibles */
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>{{ user.username }}</h2> 
+        <h2>{{ user.username|upper }}</h2>
         <a href="/inicio/">INICIO</a>
-        <a href="/alertas/" class="active">ALERTAS <span style="color:red;">1</span></a>
+        <a href="/alertas/">ALERTAS</a>
         <a href="/exportar/">EXPORTAR</a>
         <a href="/salir/">SALIR</a>
     </div>
     
-    <div>
+    <div class="content">
         <h2>Datos de la Estación</h2>
         <table>
             <thead>
@@ -77,6 +107,10 @@
                     <td>{{ dato.velocidad_viento }}</td>
                     <td>{{ dato.direccion_viento }}</td>
                     <td>{{ dato.pluvialidad }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7">No hay datos disponibles.</td>
                 </tr>
                 {% endfor %}
             </tbody>
