@@ -18,6 +18,7 @@ db_config = {
     'user': 'grupo1',
     'password': 'grupo1',
     'host': '192.168.100.151',
+    
     'database': 'estaciones_meteorologicas'
 }
 
