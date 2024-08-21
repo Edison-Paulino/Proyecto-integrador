@@ -5,4 +5,5 @@ urlpatterns = [
    path('', views.login_view, name='login'),  # Página principal redirige a login
    path('login/', views.login_view, name='login'),  # Nueva ruta para /login/
    path('register/', views.register_view, name='register'),
+   path('panel/', views.panel_view, name='panel'),
 ]

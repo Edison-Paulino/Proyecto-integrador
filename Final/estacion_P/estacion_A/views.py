@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from .forms import RegisterForm
+from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     error_message = None
@@ -11,7 +12,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/')  # Redirige a la página principal después de iniciar sesión
+            return redirect('/panel/')  # Redirige a la página principal después de iniciar sesión
         else:
             error_message = "Nombre de usuario o contraseña incorrectos"
 
@@ -35,3 +36,7 @@ def register_view(request):
     
     form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
+@login_required 
+def panel_view(request):
+    return render(request, 'gen_me.html')

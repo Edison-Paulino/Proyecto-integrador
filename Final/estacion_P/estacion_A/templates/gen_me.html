@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Navegación</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #101F3C;
+            display: flex;
+            justify-content: flex-start;
+            align-items: stretch;
+            height: 100vh;
+            margin: 0;
+        }
+        .sidebar {
+            background-color: #0B1E35;
+            padding: 20px;
+            width: 250px;
+            height: 100vh;
+            color: #fff;
+        }
+        .sidebar h2 {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #223C60;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+        }
+        .sidebar a:hover {
+            background-color: #33537A;
+        }
+        .sidebar .active {
+            background-color: #33537A;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>MI PERFIL</h2>
+        <a href="/inicio/">INICIO</a>
+        <a href="/alertas/" class="active">ALERTAS <span style="color:red;">1</span></a>
+        <a href="/exportar/">EXPORTAR</a>
+        <a href="/salir/">SALIR</a>
+    </div>
+</body>
+</html>
