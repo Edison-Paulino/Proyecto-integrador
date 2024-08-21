@@ -46,11 +46,41 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>MI PERFIL</h2>
+        <h2>{{ user.username }}</h2> 
         <a href="/inicio/">INICIO</a>
         <a href="/alertas/" class="active">ALERTAS <span style="color:red;">1</span></a>
         <a href="/exportar/">EXPORTAR</a>
         <a href="/salir/">SALIR</a>
+    </div>
+    
+    <div>
+        <h2>Datos de la Estación</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Temperatura</th>
+                    <th>Humedad</th>
+                    <th>Presión</th>
+                    <th>Velocidad Viento</th>
+                    <th>Dirección Viento</th>
+                    <th>Pluvialidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dato in datos %}
+                <tr>
+                    <td>{{ dato.fecha }}</td>
+                    <td>{{ dato.temperatura }}</td>
+                    <td>{{ dato.humedad }}</td>
+                    <td>{{ dato.presion }}</td>
+                    <td>{{ dato.velocidad_viento }}</td>
+                    <td>{{ dato.direccion_viento }}</td>
+                    <td>{{ dato.pluvialidad }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
