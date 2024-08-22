@@ -5,6 +5,7 @@ from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from .models import DatosEstacion
 from django.core.paginator import Paginator
+from django.contrib.auth import logout
 
 def login_view(request):
     error_message = None
@@ -58,3 +59,7 @@ def panel_view(request):
     
     # Pasar los datos paginados a la plantilla
     return render(request, 'gen_me.html', {'page_obj': page_obj, 'registros_por_pagina': registros_por_pagina})
+
+def logout_view(request):
+    logout(request)  # Cierra la sesión del usuario
+    return redirect('login')  # Redirige al login después de cerrar sesión
