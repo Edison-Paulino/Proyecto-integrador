@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
 from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from .models import DatosEstacion
 from django.core.paginator import Paginator
 from django.contrib.auth import logout
+from django.contrib.auth import update_session_auth_hash
+from .forms import UserUpdateForm, CustomPasswordChangeForm
 
 def login_view(request):
     error_message = None
@@ -39,6 +40,32 @@ def register_view(request):
     
     form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
+@login_required
+def profile_view(request):
+    return render(request, 'profile.html', {'user': request.user})
+
+@login_required
+def edit_profile_view(request):
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+
+        if user_form.is_valid() and password_form.is_valid():
+            user_form.save()
+            user = password_form.save()
+            # Mantener al usuario autenticado después de cambiar la contraseña
+            update_session_auth_hash(request, user)
+            return redirect('profile')  # Redirige al perfil actualizado
+    else:
+        user_form = UserUpdateForm(instance=request.user)
+        password_form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, 'edit_profile.html', {
+        'user_form': user_form,
+        'password_form': password_form
+    })
+
 
 @login_required 
 def panel_view(request):

@@ -89,7 +89,7 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>{{ user.username|upper }}</h2>
+        <h2><a href="{% url 'profile' %}">{{ user.username|upper }}</a></h2>
         <a href="/inicio/">INICIO</a>
         <a href="/alertas/">ALERTAS</a>
         <a href="/exportar/">EXPORTAR</a>
