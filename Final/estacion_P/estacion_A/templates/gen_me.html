@@ -40,13 +40,10 @@
         .sidebar a:hover {
             background-color: #33537A;
         }
-        .sidebar .active {
-            background-color: #33537A;
-        }
         .content {
             flex-grow: 1;
             padding: 20px;
-            margin-left: 30px;  /* Agregamos más espacio entre la barra lateral y el contenido */
+            margin-left: 30px;
         }
         h2 {
             margin-bottom: 20px;
@@ -55,7 +52,7 @@
             width: 100%;
             border-collapse: collapse;
             color: #fff;
-            background-color: #12273D;  /* Fondo oscuro para la tabla */
+            background-color: #12273D;
         }
         th, td {
             padding: 12px;
@@ -70,7 +67,23 @@
             background-color: #33537A;
         }
         td {
-            border: 1px solid #33537A;  /* Bordes más visibles */
+            border: 1px solid #33537A;
+        }
+        .pagination-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination-buttons a {
+            margin: 0 5px;
+            padding: 10px 20px;
+            background-color: #223C60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .pagination-buttons a:hover {
+            background-color: #33537A;
         }
     </style>
 </head>
@@ -85,28 +98,40 @@
     
     <div class="content">
         <h2>Datos de la Estación</h2>
+        
+        <!-- Formulario para seleccionar la cantidad de registros por página -->
+        <form method="GET">
+            <label for="registros">Mostrar registros por página:</label>
+            <select name="registros" id="registros" onchange="this.form.submit()">
+                <option value="5" {% if registros_por_pagina == '5' %}selected{% endif %}>5</option>
+                <option value="10" {% if registros_por_pagina == '10' %}selected{% endif %}>10</option>
+                <option value="20" {% if registros_por_pagina == '20' %}selected{% endif %}>20</option>
+                <option value="50" {% if registros_por_pagina == '50' %}selected{% endif %}>50</option>
+            </select>
+        </form>
+
         <table>
             <thead>
                 <tr>
-                    <th>Fecha</th>
                     <th>Temperatura</th>
-                    <th>Humedad</th>
                     <th>Presión</th>
-                    <th>Velocidad Viento</th>
-                    <th>Dirección Viento</th>
+                    <th>Velocidad del Viento</th>
+                    <th>Dirección del Viento</th>
+                    <th>Humedad</th>
                     <th>Pluvialidad</th>
+                    <th>Fecha</th>
                 </tr>
             </thead>
             <tbody>
-                {% for dato in datos %}
+                {% for dato in page_obj %}
                 <tr>
-                    <td>{{ dato.fecha }}</td>
                     <td>{{ dato.temperatura }}</td>
-                    <td>{{ dato.humedad }}</td>
                     <td>{{ dato.presion }}</td>
                     <td>{{ dato.velocidad_viento }}</td>
                     <td>{{ dato.direccion_viento }}</td>
+                    <td>{{ dato.humedad }}</td>
                     <td>{{ dato.pluvialidad }}</td>
+                    <td>{{ dato.fecha }}</td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -115,6 +140,21 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Paginación -->
+        <div class="pagination-buttons">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&registros={{ registros_por_pagina }}">PRIMERA</a>
+                <a href="?page={{ page_obj.previous_page_number }}&registros={{ registros_por_pagina }}">ANTERIOR</a>
+            {% endif %}
+
+            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&registros={{ registros_por_pagina }}">SIGUIENTE</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&registros={{ registros_por_pagina }}">ULTIMA</a>
+            {% endif %}
+        </div>
     </div>
 </body>
 </html>

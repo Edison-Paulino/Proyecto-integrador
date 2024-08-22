@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
 from .models import DatosEstacion
+from django.core.paginator import Paginator
 
 def login_view(request):
     error_message = None
@@ -40,8 +41,20 @@ def register_view(request):
 
 @login_required 
 def panel_view(request):
-     # Obtener todos los datos de la tabla DatosEstacion
-    datos = DatosEstacion.objects.all()  # Aquí obtienes todos los datos de la tabla
+     # Obtener el valor de registros por página del formulario, con un valor predeterminado de 10
+    registros_por_pagina = request.GET.get('registros', 10)
     
-    # Pasar los datos a la plantilla
-    return render(request, 'gen_me.html', {'datos': datos})
+    # Obtener todos los datos de la tabla DatosEstacion
+    datos = DatosEstacion.objects.all()
+    
+    # Crear el paginador con el número de registros elegidos por el usuario
+    paginator = Paginator(datos, registros_por_pagina)
+    
+    # Obtener el número de página actual
+    page_number = request.GET.get('page')
+    
+    # Obtener los datos correspondientes a la página actual
+    page_obj = paginator.get_page(page_number)
+    
+    # Pasar los datos paginados a la plantilla
+    return render(request, 'gen_me.html', {'page_obj': page_obj, 'registros_por_pagina': registros_por_pagina})
