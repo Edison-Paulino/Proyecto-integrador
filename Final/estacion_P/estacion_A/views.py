@@ -45,7 +45,7 @@ def panel_view(request):
     registros_por_pagina = request.GET.get('registros', 10)
     
     # Obtener todos los datos de la tabla DatosEstacion
-    datos = DatosEstacion.objects.all()
+    datos = DatosEstacion.objects.all().order_by('-fecha') 
     
     # Crear el paginador con el número de registros elegidos por el usuario
     paginator = Paginator(datos, registros_por_pagina)
