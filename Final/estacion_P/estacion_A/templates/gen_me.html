@@ -157,4 +157,30 @@
         </div>
     </div>
 </body>
+
+<script>
+    // Conectar al WebSocket en el servidor
+    const ws = new WebSocket('wss://itt363-1.smar.com.do/ws/estaciones/');
+
+    ws.onopen = function () {
+        console.log('WebSocket conectado.');
+    };
+
+    ws.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log('Mensaje recibido:', data);
+        // Aquí puedes actualizar los datos en tu página
+    };
+
+    ws.onclose = function () {
+        console.log('WebSocket desconectado.');
+    };
+
+    ws.onerror = function (error) {
+        console.log('WebSocket error:', error);
+    };
+</script>
+</body>
+
+
 </html>
