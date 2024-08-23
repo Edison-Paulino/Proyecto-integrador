@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exportar Datos</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #101F3C;
+            margin: 0;
+            color: white;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            background-color: #0B1E35;
+        }
+        .header-buttons a {
+            background-color: #33537A;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .export-form {
+            background-color: #223C60;
+            padding: 20px;
+            border-radius: 12px;
+            width: 400px;
+        }
+
+        .export-form label {
+            display: block;
+            margin-bottom: 10px;
+            color: #FFF;
+        }
+
+        .export-form input,
+        .export-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #33537A;
+            color: white;
+            font-size: 16px;
+        }
+
+        .export-form button {
+            background-color: #33537A;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .export-form button:hover {
+            background-color: #4685ff;
+        }
+
+        .export-form .actions {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-buttons">
+        <a href="{% url 'home' %}">INICIO</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">CERRAR SESIÓN</a>
+    </div>
+
+    <div class="content">
+        <h1>EXPORTAR</h1>
+        <div class="export-form">
+            <form method="POST">
+                {% csrf_token %}
+                <label for="estacion">Estación:</label>
+                <select name="estacion" id="estacion">
+                    <option value="TODAS">TODAS</option>
+                    {% for estacion in estaciones %}
+                        <option value="{{ estacion.nombre }}">{{ estacion.nombre }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="sensor">Sensor:</label>
+                <select name="sensor" id="sensor">
+                    <option value="TODOS">TODOS</option>
+                    <!-- Agrega más sensores aquí si es necesario -->
+                </select>
+
+                <label for="fecha_inicio">Inicio:</label>
+                <input type="date" name="fecha_inicio" id="fecha_inicio" required>
+                <input type="time" name="hora_inicio" id="hora_inicio" required>
+
+                <label for="fecha_fin">Fin:</label>
+                <input type="date" name="fecha_fin" id="fecha_fin" required>
+                <input type="time" name="hora_fin" id="hora_fin" required>
+
+                <label for="formato">Formato:</label>
+                <select name="formato" id="formato">
+                    <option value="JSON">JSON</option>
+                    <option value="CSV">CSV</option>
+                </select>
+
+                <div class="actions">
+                    <button type="submit">EXPORTAR</button>
+                    <button type="reset">CANCELAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

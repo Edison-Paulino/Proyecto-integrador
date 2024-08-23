@@ -15,6 +15,12 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from .models import Estacion 
 from .forms import EstacionForm 
+from django.http import HttpResponse
+from .forms import ExportForm
+import json
+import csv
+from django.template.loader import render_to_string
+
 
 def login_view(request):
     error_message = None
@@ -241,6 +247,55 @@ def administrar_alertas_view(request):
                 parametro.save()
             return redirect('alertas')  # Redirigir después de guardar
         return render(request, 'administrar_alertas.html', {'parametros': parametros})
+
+@login_required
+def exportar_view(request):
+    if request.method == 'POST':
+        form = ExportForm(request.POST)
+        if form.is_valid():
+            # Obtener los datos del formulario
+            estacion = form.cleaned_data['estacion']
+            sensor = form.cleaned_data['sensor']
+            fecha_inicio = form.cleaned_data['fecha_inicio']
+            fecha_fin = form.cleaned_data['fecha_fin']
+            formato = form.cleaned_data['formato']
+            
+            # Filtrar los datos según la estación, sensor y rango de fechas
+            datos = DatosEstacion.objects.filter(
+                fecha__range=(fecha_inicio, fecha_fin)
+            )
+            
+            if estacion != 'TODAS':
+                datos = datos.filter(estacion__nombre=estacion)
+            
+            if sensor != 'TODOS':
+                datos = datos.filter(sensor=sensor)
+
+            # Exportar según el formato seleccionado
+            if formato == 'JSON':
+                return exportar_json(datos)
+            elif formato == 'CSV':
+                return exportar_csv(datos)
+
+    else:
+        form = ExportForm()
+
+    return render(request, 'exportar.html', {'form': form})
+
+def exportar_json(datos):
+    data = list(datos.values())
+    response = HttpResponse(json.dumps(data, indent=4), content_type='application/json')
+    response['Content-Disposition'] = 'attachment; filename="datos_estacion.json"'
+    return response
+
+def exportar_csv(datos):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="datos_estacion.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Fecha', 'Temperatura', 'Presión', 'Humedad', 'Velocidad Viento', 'Dirección Viento'])
+    for dato in datos:
+        writer.writerow([dato.fecha, dato.temperatura, dato.presion, dato.humedad, dato.velocidad_viento, dato.direccion_viento])
+    return response
 
 @login_required 
 def panel_view(request):

@@ -17,4 +17,5 @@ urlpatterns = [
    path('alertas/', views.alertas_view, name='alertas'),
    path('administrar_alertas/', views.administrar_alertas_view, name='administrar_alertas'),
    path('eliminar-alerta/<int:id>/', views.eliminar_alerta_view, name='eliminar_alerta'),
+   path('exportar/', views.exportar_view, name='exportar'),
 ] 
