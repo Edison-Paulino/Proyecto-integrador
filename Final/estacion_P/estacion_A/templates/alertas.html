@@ -43,6 +43,10 @@
             display: flex;
             justify-content: space-between;
             width: 80%;
+            align-items: center;
+        }
+        .alerta div {
+            margin: 0 10px;
         }
         .boton {
             background-color: #33537A;
@@ -50,6 +54,18 @@
             border-radius: 8px;
             text-decoration: none;
             color: white;
+        }
+        .eliminar-btn {
+            background-color: #FF6347;
+            padding: 10px;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+        }
+        .eliminar-btn:hover {
+            background-color: #FF4500;
         }
     </style>
 </head>
@@ -66,6 +82,10 @@
                 <div>{{ alerta.tipo_alerta }}</div>
                 <div>{{ alerta.descripcion }}</div>
                 <div>{{ alerta.fecha_hora }}</div>
+                <form action="{% url 'eliminar_alerta' alerta.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="eliminar-btn">Eliminar</button>
+                </form>
             </div>
         {% empty %}
             <p>No hay alertas activas en este momento.</p>

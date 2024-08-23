@@ -174,6 +174,14 @@ def alertas_view(request):
     alertas = Alerta.objects.filter(es_activa=True).order_by('-fecha_hora')
     return render(request, 'alertas.html', {'alertas': alertas})
 
+@login_required
+def eliminar_alerta_view(request, id):
+    alerta = get_object_or_404(Alerta, id=id)
+    alerta.es_activa = False
+    alerta.save()
+    return redirect('alertas')  # Redirige de nuevo a la página de alertas
+
+
 def verificar_conexion_estacion():
     # Obtener la última lectura
     ultima_lectura = DatosEstacion.objects.order_by('-fecha').first()
