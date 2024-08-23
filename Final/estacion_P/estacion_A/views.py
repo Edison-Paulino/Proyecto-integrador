@@ -104,6 +104,7 @@ def home_view(request):
         'fecha_hora': fecha_hora,
         'temperatura': round(promedio_temperatura, 0),  # Redondeamos el promedio a 2 decimales
         'estaciones': estaciones,
+        'alertas_activas': alertas_activas
     }
     
     return render(request, 'home.html', context)
