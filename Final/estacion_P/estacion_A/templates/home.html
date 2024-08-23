@@ -131,7 +131,9 @@
         <!-- Cambiamos el perfil por el nombre de usuario -->
         <h2><a href="{% url 'profile' %}">{{ user.username|upper }}</a></h2>
         <a href="{% url 'home' %}">INICIO</a>
-        <a href="/alertas/">ALERTAS</a>
+        <a href="{% url 'alertas' %}">
+            ALERTAS <span class="alert-badge">{{ alertas_activas }}</span>
+        </a>
         <a href="/exportar/">EXPORTAR</a>
         <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">SALIR</a>
     </div>

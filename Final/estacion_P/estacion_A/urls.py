@@ -14,4 +14,6 @@ urlpatterns = [
    path('crear_estacion/', views.crear_estacion_view, name='crear_estacion'),
    path('eliminar_estacion/<int:id>/', views.eliminar_estacion_view, name='eliminar_estacion'),  # Eliminar
    path('editar_estacion/<int:id>/', views.editar_estacion_view, name='editar_estacion'),  # Editar
+   path('alertas/', views.alertas_view, name='alertas'),
+   path('administrar_alertas/', views.administrar_alertas_view, name='administrar_alertas'),
 ] 

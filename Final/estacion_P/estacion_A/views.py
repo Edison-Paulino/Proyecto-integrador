@@ -9,7 +9,8 @@ from django.contrib.auth import update_session_auth_hash
 from .forms import UserUpdateForm, CustomPasswordChangeForm
 from datetime import datetime
 from django.db.models import Avg
-from .models import DatosEstacion 
+from .models import RangoParametro, Alerta, DatosEstacion
+from datetime import datetime
 from .models import Estacion 
 from .forms import EstacionForm 
 
@@ -88,6 +89,13 @@ def home_view(request):
 
     estaciones = Estacion.objects.all()
 
+    # Procesar las lecturas de la estación y verificar alertas
+    datos_estacion = DatosEstacion.objects.latest('fecha')  # Ejemplo, obtén la última lectura
+    verificar_alertas(datos_estacion)
+
+    alertas_activas = Alerta.objects.filter(es_activa=True).count()  # Contar alertas activas
+    # Datos para la página de inicio (Home)
+
     context = {
         'ciudad': 'Santiago',
         'fecha_hora': fecha_hora,
@@ -128,6 +136,38 @@ def eliminar_estacion_view(request, id):
     estacion = get_object_or_404(Estacion, id=id)
     estacion.delete()
     return redirect('home')
+
+def verificar_alertas(datos_estacion):
+    # Obtener todos los parámetros definidos
+    parametros = RangoParametro.objects.all()
+
+    for parametro in parametros:
+        # Obtener el valor de la estación para la variable que se está verificando
+        valor_variable = getattr(datos_estacion, parametro.nombre.lower())
+
+        # Verificar si el valor está fuera del rango permitido
+        if valor_variable < parametro.limite_inferior or valor_variable > parametro.limite_superior:
+            # Crear una alerta si está fuera de rango
+            descripcion = f"{parametro.nombre} fuera de rango: {valor_variable}"
+            Alerta.objects.create(tipo_alerta=parametro.nombre, descripcion=descripcion)
+
+def alertas_view(request):
+    alertas = Alerta.objects.filter(es_activa=True).order_by('-fecha_hora')
+    return render(request, 'alertas.html', {'alertas': alertas})
+
+def administrar_alertas_view(request):
+    parametros = RangoParametro.objects.all()
+
+    if request.method == 'POST':
+        for parametro in parametros:
+            limite_inferior = request.POST.get(f'limite_inferior_{parametro.id}')
+            limite_superior = request.POST.get(f'limite_superior_{parametro.id}')
+            parametro.limite_inferior = float(limite_inferior)
+            parametro.limite_superior = float(limite_superior)
+            parametro.save()
+        return redirect('alertas')
+
+    return render(request, 'administrar_alertas.html', {'parametros': parametros})
 
 @login_required 
 def panel_view(request):
