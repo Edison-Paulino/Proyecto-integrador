@@ -49,8 +49,13 @@
         }
         .content {
             flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             padding: 40px;
             color: white;
+            text-align: center;
         }
         .content h1 {
             font-size: 36px;
@@ -65,6 +70,8 @@
             background-color: #0B1E35;
             padding: 20px;
             border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
         }
         .station {
             background-color: #223C60;
@@ -110,7 +117,8 @@
 </head>
 <body>
     <div class="sidebar">
-        <h2>MI PERFIL</h2>
+        <!-- Cambiamos el perfil por el nombre de usuario -->
+        <h2><a href="{% url 'profile' %}">{{ user.username|upper }}</a></h2>
         <a href="{% url 'home' %}">INICIO</a>
         <a href="/alertas/">ALERTAS</a>
         <a href="/exportar/">EXPORTAR</a>
@@ -118,25 +126,31 @@
     </div>
     
     <div class="content">
+        <!-- Centralizamos el contenido -->
         <h1>{{ ciudad }}</h1>
         <p>{{ fecha_hora }}</p>
         <div class="temperature">{{ temperatura }}°</div>
         
         <div class="stations-container">
             <h2>Estaciones</h2>
-            <div class="station">
-                <div>
-                    <h3>Estación 1</h3>
-                    <p>Descripción de la estación 1</p>
+            {% for estacion in estaciones %}
+                <div class="station">
+                    <div>
+                        <h3>{{ estacion.nombre }}</h3>
+                        <p>{{ estacion.descripcion }}</p>
+                    </div>
+                    <div class="buttons">
+                        <a href="#">Ver Datos</a>
+                        <a href="#">Administrar</a>
+                    </div>
                 </div>
-                <div class="buttons">
-                    <a href="#">Ver Datos</a>
-                    <a href="#">Administrar</a>
-                </div>
-            </div>
+            {% empty %}
+                <p>No hay estaciones creadas.</p>
+            {% endfor %}
             
-            <a href="#" class="create-station">CREAR ESTACIÓN</a>
+            <a href="{% url 'crear_estacion' %}" class="create-station">CREAR ESTACIÓN</a>
         </div>
+        
     </div>
 </body>
 </html>

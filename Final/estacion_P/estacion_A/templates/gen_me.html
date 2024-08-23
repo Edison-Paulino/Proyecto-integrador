@@ -16,28 +16,22 @@
             margin: 0;
             color: white;
         }
-        .sidebar {
-            background-color: #0B1E35;
-            padding: 20px;
-            width: 250px;
-            height: 100vh;
-            color: #fff;
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
         }
-        .sidebar h2 {
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        .sidebar a {
-            display: block;
-            padding: 10px;
-            margin-bottom: 15px;
+        .top-right-buttons a {
             background-color: #223C60;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
             color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
         }
-        .sidebar a:hover {
+        .top-right-buttons a:hover {
             background-color: #33537A;
         }
         .content {
@@ -88,12 +82,9 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h2><a href="{% url 'profile' %}">{{ user.username|upper }}</a></h2>
-        <a href="/inicio/">INICIO</a>
-        <a href="/alertas/">ALERTAS</a>
-        <a href="/exportar/">EXPORTAR</a>
-        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">SALIR</a>
+    <div class="top-right-buttons">
+        <a href="{% url 'home' %}">INICIO</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres cerrar sesión?')">CERRAR SESIÓN</a>
     </div>
     
     <div class="content">

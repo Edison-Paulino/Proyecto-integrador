@@ -15,3 +15,10 @@ class DatosEstacion(models.Model):
 
     def __str__(self):
         return f"Estación {self.id_estacion} - Fecha: {self.fecha}"
+
+class Estacion(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return self.nombre

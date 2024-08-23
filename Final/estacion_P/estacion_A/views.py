@@ -10,6 +10,8 @@ from .forms import UserUpdateForm, CustomPasswordChangeForm
 from datetime import datetime
 from django.db.models import Avg
 from .models import DatosEstacion 
+from .models import Estacion 
+from .forms import EstacionForm 
 
 def login_view(request):
     error_message = None
@@ -84,13 +86,28 @@ def home_view(request):
     if promedio_temperatura is None:
         promedio_temperatura = 0
 
+    estaciones = Estacion.objects.all()
+
     context = {
         'ciudad': 'Santiago',
         'fecha_hora': fecha_hora,
         'temperatura': round(promedio_temperatura, 0),  # Redondeamos el promedio a 2 decimales
+        'estaciones': estaciones,
     }
     
     return render(request, 'home.html', context)
+
+@login_required
+def crear_estacion_view(request):
+    if request.method == 'POST':
+        form = EstacionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # Redirige a la página principal después de crear la estación
+    else:
+        form = EstacionForm()
+    
+    return render(request, 'crear_estacion.html', {'form': form})
 
 @login_required 
 def panel_view(request):

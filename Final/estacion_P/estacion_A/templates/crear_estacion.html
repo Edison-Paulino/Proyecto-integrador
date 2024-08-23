@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Estación</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #101F3C;
+            margin: 0;
+            color: white;
+        }
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .top-right-buttons a {
+            background-color: #223C60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .top-right-buttons a:hover {
+            background-color: #33537A;
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .form-container {
+            background-color: #0B1E35;
+            padding: 40px;
+            border-radius: 12px;
+            width: 400px;
+        }
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        input, textarea {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #223C60;
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            background-color: #33537A;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4685ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-right-buttons">
+        <a href="{% url 'home' %}">INICIO</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres cerrar sesión?')">CERRAR SESIÓN</a>
+    </div>
+    
+    <div class="content">
+        <div class="form-container">
+            <h2>Crear Estación</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required>
+                
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+                
+                <button type="submit">GUARDAR</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
