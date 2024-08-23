@@ -7,6 +7,9 @@ from django.core.paginator import Paginator
 from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from .forms import UserUpdateForm, CustomPasswordChangeForm
+from datetime import datetime
+from django.db.models import Avg
+from .models import DatosEstacion 
 
 def login_view(request):
     error_message = None
@@ -16,7 +19,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/panel/')  # Redirige a la página principal después de iniciar sesión
+            return redirect('home')  # Redirige a la página principal después de iniciar sesión
         else:
             error_message = "Nombre de usuario o contraseña incorrectos"
 
@@ -67,6 +70,27 @@ def edit_profile_view(request):
         'password_form': password_form
     })
 
+@login_required
+def home_view(request):
+    # Obteniendo la fecha y hora actual
+    now = datetime.now()
+    fecha_hora = now.strftime("%d/%m/%Y %I:%M %p")
+    
+    # Obtener el promedio de las últimas 20 lecturas de temperatura
+    ultimas_lecturas = DatosEstacion.objects.order_by('-fecha')[:20]
+    promedio_temperatura = ultimas_lecturas.aggregate(Avg('temperatura'))['temperatura__avg']
+    
+    # Si no hay lecturas, asigna un valor predeterminado de 0
+    if promedio_temperatura is None:
+        promedio_temperatura = 0
+
+    context = {
+        'ciudad': 'Santiago',
+        'fecha_hora': fecha_hora,
+        'temperatura': round(promedio_temperatura, 0),  # Redondeamos el promedio a 2 decimales
+    }
+    
+    return render(request, 'home.html', context)
 
 @login_required 
 def panel_view(request):

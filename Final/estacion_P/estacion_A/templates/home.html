@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #101F3C;
+            display: flex;
+            margin: 0;
+            color: white;
+        }
+        .sidebar {
+            background-color: #0B1E35;
+            padding: 20px;
+            width: 250px;
+            height: 100vh;
+            color: #fff;
+        }
+        .sidebar h2 {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #223C60;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+        }
+        .sidebar a:hover {
+            background-color: #33537A;
+        }
+        .sidebar a .alert-badge {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 3px 8px;
+            font-size: 12px;
+            position: relative;
+            top: -8px;
+            left: 5px;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 40px;
+            color: white;
+        }
+        .content h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .content .temperature {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .stations-container {
+            background-color: #0B1E35;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .station {
+            background-color: #223C60;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .station h3 {
+            margin: 0;
+            color: white;
+        }
+        .station .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .station .buttons a {
+            background-color: #33537A;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+        .station .buttons a:hover {
+            background-color: #4685ff;
+        }
+        .create-station {
+            background-color: #33537A;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .create-station:hover {
+            background-color: #4685ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>MI PERFIL</h2>
+        <a href="{% url 'home' %}">INICIO</a>
+        <a href="{% url 'alertas' %}">ALERTAS <span class="alert-badge">1</span></a>
+        <a href="{% url 'exportar' %}">EXPORTAR</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">SALIR</a>
+    </div>
+    
+    <div class="content">
+        <h1>{{ ciudad }}</h1>
+        <p>{{ fecha_hora }}</p>
+        <div class="temperature">{{ temperatura }}°</div>
+        
+        <div class="stations-container">
+            <h2>Estaciones</h2>
+            <div class="station">
+                <div>
+                    <h3>Estación 1</h3>
+                    <p>Descripción de la estación 1</p>
+                </div>
+                <div class="buttons">
+                    <a href="#">Ver Datos</a>
+                    <a href="#">Administrar</a>
+                </div>
+            </div>
+            
+            <a href="#" class="create-station">CREAR ESTACIÓN</a>
+        </div>
+    </div>
+</body>
+</html>
