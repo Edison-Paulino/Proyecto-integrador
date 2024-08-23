@@ -91,7 +91,7 @@ def home_view(request):
 
     estaciones = Estacion.objects.all()
     verificar_conexion_estacion()
-    
+
     # Procesar las lecturas de la estación y verificar alertas
     datos_estacion = DatosEstacion.objects.latest('fecha')  # Ejemplo, obtén la última lectura
     verificar_alertas(datos_estacion)
@@ -194,7 +194,7 @@ def administrar_alertas_view(request):
     if not parametros.exists():
         if request.method == 'POST':
             # Crear parámetros por defecto (ejemplo para seis variables)
-            nombres = ['Temperatura', 'Presión', 'Humedad', 'LLuvia', 'Dir_Viento', 'Vel_Viento']
+            nombres = ['Temperatura', 'Presion', 'Humedad', 'LLuvia', 'Dir_Viento', 'Vel_Viento']
             for nombre in nombres:
                 limite_inferior = request.POST.get(f'limite_inferior_{nombre}')
                 limite_superior = request.POST.get(f'limite_superior_{nombre}')
