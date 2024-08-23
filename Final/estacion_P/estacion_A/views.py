@@ -51,11 +51,12 @@ def edit_profile_view(request):
         user_form = UserUpdateForm(request.POST, instance=request.user)
         password_form = CustomPasswordChangeForm(user=request.user, data=request.POST)
 
-        if user_form.is_valid() and password_form.is_valid():
+        if user_form.is_valid():
             user_form.save()
-            user = password_form.save()
-            # Mantener al usuario autenticado después de cambiar la contraseña
-            update_session_auth_hash(request, user)
+
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
             return redirect('profile')  # Redirige al perfil actualizado
     else:
         user_form = UserUpdateForm(instance=request.user)

@@ -9,19 +9,20 @@
         body {
             font-family: 'Roboto', Arial, sans-serif;
             background-color: #101F3C;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            color: white;
+            position: relative;
         }
         .profile-container {
             background-color: #0B1E35;
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            width: 320px;
+            width: 400px;
             text-align: center;
         }
         h2 {
@@ -40,28 +41,30 @@
         .profile-info strong {
             color: #4685ff;
         }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
-        .buttons button, .buttons a {
+        .top-right-buttons a {
             background-color: #223C60;
             color: white;
             padding: 10px 20px;
-            border: none;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
             text-decoration: none;
-            text-align: center;
-            width: 45%;
+            margin-left: 10px;
         }
-        button:hover, a:hover {
+        .top-right-buttons a:hover {
             background-color: #33537A;
         }
     </style>
 </head>
 <body>
+    <div class="top-right-buttons">
+        <a href="{% url 'panel' %}">Inicio</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres cerrar sesión?')">Cerrar Sesión</a>
+    </div>
+
     <div class="profile-container">
         <h2>Información del Usuario</h2>
         <div class="profile-info">
@@ -70,11 +73,9 @@
             <p><strong>Nombre:</strong> {{ user.first_name }}</p>
             <p><strong>Apellido:</strong> {{ user.last_name }}</p>
         </div>
-        <div class="buttons">
-            <a href="{% url 'edit_profile' %}">Editar Perfil</a>
-            <button onclick="window.history.back();">Volver</button>
-        </div>
+        <a href="{% url 'edit_profile' %}" class="edit-button">Editar Perfil</a>
     </div>
 </body>
 </html>
+
 

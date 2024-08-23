@@ -9,12 +9,13 @@
         body {
             font-family: 'Roboto', Arial, sans-serif;
             background-color: #101F3C;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            color: white;
+            position: relative;
         }
         .edit-container {
             background-color: #0B1E35;
@@ -32,15 +33,24 @@
         form {
             text-align: left;
         }
+        fieldset {
+            border: none;
+            margin-bottom: 20px;
+        }
+        legend {
+            color: #4685ff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
         label {
             display: block;
             margin-bottom: 8px;
-            color: #4685ff;
+            color: white;
         }
         input {
             width: 100%;
             padding: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #33537A;
             background-color: #12273D;
@@ -49,6 +59,7 @@
         .buttons {
             display: flex;
             justify-content: space-between;
+            margin-top: 20px;
         }
         .buttons button, .buttons a {
             background-color: #223C60;
@@ -65,9 +76,30 @@
         button:hover, a:hover {
             background-color: #33537A;
         }
+        .top-right-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .top-right-buttons a {
+            background-color: #223C60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .top-right-buttons a:hover {
+            background-color: #33537A;
+        }
     </style>
 </head>
 <body>
+    <div class="top-right-buttons">
+        <a href="{% url 'panel' %}">Inicio</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres cerrar sesión?')">Cerrar Sesión</a>
+    </div>
+
     <div class="edit-container">
         <h2>Editar Perfil</h2>
         <form method="POST">
