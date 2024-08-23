@@ -11,6 +11,22 @@
             margin: 0;
             color: white;
         }
+
+        .header-buttons {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+            background-color: #0B1E35;
+        }
+        .header-buttons a {
+            background-color: #33537A;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
         .content {
             display: flex;
             flex-direction: column;
@@ -38,6 +54,11 @@
     </style>
 </head>
 <body>
+    <div class="header-buttons">
+        <a href="{% url 'home' %}">INICIO</a>
+        <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">CERRAR SESIÓN</a>
+    </div>
+
     <div class="content">
         <h1>¡ALERTAS!</h1>
         {% for alerta in alertas %}

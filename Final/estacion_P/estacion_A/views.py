@@ -156,18 +156,36 @@ def alertas_view(request):
     return render(request, 'alertas.html', {'alertas': alertas})
 
 def administrar_alertas_view(request):
+    # Verifica si ya existen parámetros
     parametros = RangoParametro.objects.all()
 
-    if request.method == 'POST':
-        for parametro in parametros:
-            limite_inferior = request.POST.get(f'limite_inferior_{parametro.id}')
-            limite_superior = request.POST.get(f'limite_superior_{parametro.id}')
-            parametro.limite_inferior = float(limite_inferior)
-            parametro.limite_superior = float(limite_superior)
-            parametro.save()
-        return redirect('alertas')
+    # Si no hay parámetros, permitir agregar nuevos
+    if not parametros.exists():
+        if request.method == 'POST':
+            # Crear parámetros por defecto (ejemplo para seis variables)
+            nombres = ['Temperatura', 'Presión', 'Humedad', 'LLuvia', 'Dir_Viento', 'Vel_Viento']
+            for nombre in nombres:
+                limite_inferior = request.POST.get(f'limite_inferior_{nombre}')
+                limite_superior = request.POST.get(f'limite_superior_{nombre}')
+                RangoParametro.objects.create(
+                    nombre=nombre,
+                    limite_inferior=float(limite_inferior),
+                    limite_superior=float(limite_superior)
+                )
+            return redirect('alertas')  # Redirigir después de guardar
+        return render(request, 'administrar_alertas.html', {'nuevos_parametros': True})
 
-    return render(request, 'administrar_alertas.html', {'parametros': parametros})
+    # Si ya hay parámetros, permitir modificarlos
+    else:
+        if request.method == 'POST':
+            for parametro in parametros:
+                limite_inferior = request.POST.get(f'limite_inferior_{parametro.id}')
+                limite_superior = request.POST.get(f'limite_superior_{parametro.id}')
+                parametro.limite_inferior = float(limite_inferior)
+                parametro.limite_superior = float(limite_superior)
+                parametro.save()
+            return redirect('alertas')  # Redirigir después de guardar
+        return render(request, 'administrar_alertas.html', {'parametros': parametros})
 
 @login_required 
 def panel_view(request):
