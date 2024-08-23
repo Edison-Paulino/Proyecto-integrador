@@ -29,39 +29,52 @@
             background-color: #0B1E35;
             padding: 40px;
             border-radius: 12px;
-            width: 600px;
+            width: 700px;
             margin: auto;
             margin-top: 100px;
+            text-align: center;
         }
         h2 {
             text-align: center;
             margin-bottom: 20px;
+            font-size: 28px;
         }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
+        table {
+            width: 100%;
+            color: white;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        th {
+            font-size: 18px;
+            font-weight: 600;
+            background-color: #223C60;
+        }
+        td {
+            background-color: #33537A;
+            border: 1px solid #223C60;
         }
         input {
-            width: 45%;
+            width: 80%;
             padding: 10px;
-            margin-bottom: 20px;
             border-radius: 8px;
             border: none;
             background-color: #223C60;
             color: white;
-            margin-right: 5%;
         }
         button {
-            background-color: #33537A;
+            background-color: #4685ff;
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
-            width: 100%;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #4685ff;
+            background-color: #33537A;
         }
     </style>
 </head>
@@ -73,43 +86,57 @@
 
     <div class="form-container">
         <h2>Administrar Alertas</h2>
-
         <form method="POST">
             {% csrf_token %}
-            {% if nuevos_parametros %}
-                <!-- Mostrar los campos para agregar nuevos parámetros -->
-                <label>Temperatura</label>
-                <input type="number" step="any" name="limite_inferior_Temperatura" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_Temperatura" placeholder="Límite Superior">
-
-                <label>Presión</label>
-                <input type="number" step="any" name="limite_inferior_Presión" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_Presión" placeholder="Límite Superior">
-
-                <label>Humedad</label>
-                <input type="number" step="any" name="limite_inferior_Humedad" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_Humedad" placeholder="Límite Superior">
-
-                <label>LLuvia</label>
-                <input type="number" step="any" name="limite_inferior_LLuvia" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_LLuvia" placeholder="Límite Superior">
-
-                <label>Dirección del Viento</label>
-                <input type="number" step="any" name="limite_inferior_Dir_Viento" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_Dir_Viento" placeholder="Límite Superior">
-
-                <label>Velocidad del Viento</label>
-                <input type="number" step="any" name="limite_inferior_Vel_Viento" placeholder="Límite Inferior">
-                <input type="number" step="any" name="limite_superior_Vel_Viento" placeholder="Límite Superior">
-
-            {% else %}
-                <!-- Mostrar los parámetros existentes para modificarlos -->
-                {% for parametro in parametros %}
-                    <label>{{ parametro.nombre }}</label>
-                    <input type="number" step="any" name="limite_inferior_{{ parametro.id }}" value="{{ parametro.limite_inferior }}">
-                    <input type="number" step="any" name="limite_superior_{{ parametro.id }}" value="{{ parametro.limite_superior }}">
-                {% endfor %}
-            {% endif %}
+            <table>
+                <tr>
+                    <th>Parámetro</th>
+                    <th>Límite Inferior</th>
+                    <th>Límite Superior</th>
+                </tr>
+                {% if nuevos_parametros %}
+                    <!-- Mostrar los campos para agregar nuevos parámetros -->
+                    <tr>
+                        <td>Temperatura</td>
+                        <td><input type="number" step="any" name="limite_inferior_Temperatura" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_Temperatura" placeholder="Límite Superior"></td>
+                    </tr>
+                    <tr>
+                        <td>Presión</td>
+                        <td><input type="number" step="any" name="limite_inferior_Presión" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_Presión" placeholder="Límite Superior"></td>
+                    </tr>
+                    <tr>
+                        <td>Humedad</td>
+                        <td><input type="number" step="any" name="limite_inferior_Humedad" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_Humedad" placeholder="Límite Superior"></td>
+                    </tr>
+                    <tr>
+                        <td>LLuvia</td>
+                        <td><input type="number" step="any" name="limite_inferior_LLuvia" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_LLuvia" placeholder="Límite Superior"></td>
+                    </tr>
+                    <tr>
+                        <td>Dirección del Viento</td>
+                        <td><input type="number" step="any" name="limite_inferior_Dir_Viento" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_Dir_Viento" placeholder="Límite Superior"></td>
+                    </tr>
+                    <tr>
+                        <td>Velocidad del Viento</td>
+                        <td><input type="number" step="any" name="limite_inferior_Vel_Viento" placeholder="Límite Inferior"></td>
+                        <td><input type="number" step="any" name="limite_superior_Vel_Viento" placeholder="Límite Superior"></td>
+                    </tr>
+                {% else %}
+                    <!-- Mostrar los parámetros existentes para modificarlos -->
+                    {% for parametro in parametros %}
+                    <tr>
+                        <td>{{ parametro.nombre }}</td>
+                        <td><input type="number" step="any" name="limite_inferior_{{ parametro.id }}" value="{{ parametro.limite_inferior }}"></td>
+                        <td><input type="number" step="any" name="limite_superior_{{ parametro.id }}" value="{{ parametro.limite_superior }}"></td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
             <button type="submit">Guardar</button>
         </form>
     </div>

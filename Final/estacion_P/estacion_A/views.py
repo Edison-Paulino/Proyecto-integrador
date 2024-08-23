@@ -11,6 +11,8 @@ from datetime import datetime
 from django.db.models import Avg
 from .models import RangoParametro, Alerta, DatosEstacion
 from datetime import datetime
+from datetime import datetime, timedelta
+from django.utils import timezone
 from .models import Estacion 
 from .forms import EstacionForm 
 
@@ -88,7 +90,8 @@ def home_view(request):
         promedio_temperatura = 22
 
     estaciones = Estacion.objects.all()
-
+    verificar_conexion_estacion()
+    
     # Procesar las lecturas de la estación y verificar alertas
     datos_estacion = DatosEstacion.objects.latest('fecha')  # Ejemplo, obtén la última lectura
     verificar_alertas(datos_estacion)
@@ -154,6 +157,34 @@ def verificar_alertas(datos_estacion):
 def alertas_view(request):
     alertas = Alerta.objects.filter(es_activa=True).order_by('-fecha_hora')
     return render(request, 'alertas.html', {'alertas': alertas})
+
+def verificar_conexion_estacion():
+    # Obtener la última lectura
+    ultima_lectura = DatosEstacion.objects.order_by('-fecha').first()
+    
+    if ultima_lectura:
+        tiempo_actual = timezone.now()
+        tiempo_lectura = ultima_lectura.fecha
+
+        # Si han pasado más de 2 minutos desde la última lectura
+        if tiempo_actual - tiempo_lectura > timedelta(minutes=2):
+            # Verificar si ya existe una alerta de desconexión
+            if not Alerta.objects.filter(tipo_alerta="Desconexión", es_activa=True).exists():
+                Alerta.objects.create(
+                    tipo_alerta="Desconexión",
+                    descripcion="La estación no está enviando datos desde hace más de 2 minutos",
+                    es_activa=True
+                )
+        else:
+            # Si los datos han vuelto a recibirse, marcar la estación como conectada
+            alertas_desconexion = Alerta.objects.filter(tipo_alerta="Desconexión", es_activa=True)
+            if alertas_desconexion.exists():
+                alertas_desconexion.update(es_activa=False)
+                Alerta.objects.create(
+                    tipo_alerta="Conexión",
+                    descripcion="La estación ha vuelto a conectarse y está enviando datos",
+                    es_activa=True
+                )
 
 def administrar_alertas_view(request):
     # Verifica si ya existen parámetros
