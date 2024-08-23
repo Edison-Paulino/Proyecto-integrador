@@ -250,6 +250,8 @@ def administrar_alertas_view(request):
 
 @login_required
 def exportar_view(request):
+    estaciones = Estacion.objects.all()  # Obtener todas las estaciones
+
     if request.method == 'POST':
         form = ExportForm(request.POST)
         if form.is_valid():
@@ -257,19 +259,25 @@ def exportar_view(request):
             estacion = form.cleaned_data['estacion']
             sensor = form.cleaned_data['sensor']
             fecha_inicio = form.cleaned_data['fecha_inicio']
+            hora_inicio = form.cleaned_data['hora_inicio']
             fecha_fin = form.cleaned_data['fecha_fin']
+            hora_fin = form.cleaned_data['hora_fin']
             formato = form.cleaned_data['formato']
-            
+
+            # Combinar fecha y hora en un solo datetime
+            fecha_hora_inicio = datetime.combine(fecha_inicio, hora_inicio)
+            fecha_hora_fin = datetime.combine(fecha_fin, hora_fin)
+
             # Filtrar los datos según la estación, sensor y rango de fechas
             datos = DatosEstacion.objects.filter(
-                fecha__range=(fecha_inicio, fecha_fin)
+                fecha__range=(fecha_hora_inicio, fecha_hora_fin)
             )
             
             if estacion != 'TODAS':
-                datos = datos.filter(estacion__nombre=estacion)
+                datos = datos.filter(estacion__id=estacion)
             
             if sensor != 'TODOS':
-                datos = datos.filter(sensor=sensor)
+                datos = datos.only(sensor)  # Filtrar solo por el sensor seleccionado
 
             # Exportar según el formato seleccionado
             if formato == 'JSON':
@@ -280,7 +288,7 @@ def exportar_view(request):
     else:
         form = ExportForm()
 
-    return render(request, 'exportar.html', {'form': form})
+    return render(request, 'exportar.html', {'form': form, 'estaciones': estaciones})
 
 def exportar_json(datos):
     data = list(datos.values())
@@ -292,9 +300,15 @@ def exportar_csv(datos):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="datos_estacion.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Fecha', 'Temperatura', 'Presión', 'Humedad', 'Velocidad Viento', 'Dirección Viento'])
-    for dato in datos:
-        writer.writerow([dato.fecha, dato.temperatura, dato.presion, dato.humedad, dato.velocidad_viento, dato.direccion_viento])
+    
+    # Escribir encabezados de las columnas según el sensor seleccionado
+    if datos.exists():
+        campos = list(datos.values().first().keys())
+        writer.writerow(campos)
+        
+        for dato in datos:
+            writer.writerow([dato[field] for field in campos])
+
     return response
 
 @login_required 

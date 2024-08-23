@@ -97,14 +97,19 @@
                 <select name="estacion" id="estacion">
                     <option value="TODAS">TODAS</option>
                     {% for estacion in estaciones %}
-                        <option value="{{ estacion.nombre }}">{{ estacion.nombre }}</option>
+                        <option value="{{ estacion.id }}">{{ estacion.nombre }}</option>
                     {% endfor %}
                 </select>
 
                 <label for="sensor">Sensor:</label>
                 <select name="sensor" id="sensor">
                     <option value="TODOS">TODOS</option>
-                    <!-- Agrega más sensores aquí si es necesario -->
+                    <option value="temperatura">Temperatura</option>
+                    <option value="presion">Presión</option>
+                    <option value="humedad">Humedad</option>
+                    <option value="velocidad_viento">Velocidad del Viento</option>
+                    <option value="direccion_viento">Dirección del Viento</option>
+                    <option value="pluvialidad">Pluvialidad</option>
                 </select>
 
                 <label for="fecha_inicio">Inicio:</label>
