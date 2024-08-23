@@ -144,15 +144,30 @@ def verificar_alertas(datos_estacion):
     # Obtener todos los parámetros definidos
     parametros = RangoParametro.objects.all()
 
-    for parametro in parametros:
-        # Obtener el valor de la estación para la variable que se está verificando
-        valor_variable = getattr(datos_estacion, parametro.nombre.lower())
+    # Mapeo explícito entre los nombres de parámetros y los atributos del modelo
+    mapeo_atributos = {
+        'temperatura': 'temperatura',
+        'presión': 'presion',
+        'humedad': 'humedad',
+        'lluvia': 'pluvialidad',  # Si "lluvia" se refiere a "pluvialidad"
+        'dir_viento': 'direccion_viento',
+        'vel_viento': 'velocidad_viento'
+    }
 
-        # Verificar si el valor está fuera del rango permitido
-        if valor_variable < parametro.limite_inferior or valor_variable > parametro.limite_superior:
-            # Crear una alerta si está fuera de rango
-            descripcion = f"{parametro.nombre} fuera de rango: {valor_variable}"
-            Alerta.objects.create(tipo_alerta=parametro.nombre, descripcion=descripcion)
+    for parametro in parametros:
+        # Mapea el nombre del parámetro al atributo correcto del modelo
+        nombre_parametro = parametro.nombre.lower()
+        atributo_modelo = mapeo_atributos.get(nombre_parametro)
+        
+        # Si el atributo existe en el modelo, procedemos
+        if atributo_modelo:
+            valor_variable = getattr(datos_estacion, atributo_modelo)
+
+            # Verificar si el valor está fuera del rango permitido
+            if valor_variable < parametro.limite_inferior or valor_variable > parametro.limite_superior:
+                # Crear una alerta si está fuera de rango
+                descripcion = f"{parametro.nombre} fuera de rango: {valor_variable}"
+                Alerta.objects.create(tipo_alerta=parametro.nombre, descripcion=descripcion)
 
 def alertas_view(request):
     alertas = Alerta.objects.filter(es_activa=True).order_by('-fecha_hora')
@@ -194,7 +209,7 @@ def administrar_alertas_view(request):
     if not parametros.exists():
         if request.method == 'POST':
             # Crear parámetros por defecto (ejemplo para seis variables)
-            nombres = ['Temperatura', 'Presion', 'Humedad', 'LLuvia', 'Dir_Viento', 'Vel_Viento']
+            nombres = ['Temperatura', 'Presión', 'Humedad', 'LLuvia', 'Dir_Viento', 'Vel_Viento']
             for nombre in nombres:
                 limite_inferior = request.POST.get(f'limite_inferior_{nombre}')
                 limite_superior = request.POST.get(f'limite_superior_{nombre}')
