@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404 
 from django.contrib.auth import authenticate, login
 from .forms import RegisterForm
 from django.contrib.auth.decorators import login_required
@@ -82,9 +82,9 @@ def home_view(request):
     ultimas_lecturas = DatosEstacion.objects.order_by('-fecha')[:20]
     promedio_temperatura = ultimas_lecturas.aggregate(Avg('temperatura'))['temperatura__avg']
     
-    # Si no hay lecturas, asigna un valor predeterminado de 0
-    if promedio_temperatura is None:
-        promedio_temperatura = 0
+    # Si el promedio es 0 o no hay datos, mostramos 22
+    if not promedio_temperatura or promedio_temperatura == 0:
+        promedio_temperatura = 22
 
     estaciones = Estacion.objects.all()
 
@@ -108,6 +108,26 @@ def crear_estacion_view(request):
         form = EstacionForm()
     
     return render(request, 'crear_estacion.html', {'form': form})
+
+@login_required
+def editar_estacion_view(request, id):
+    estacion = get_object_or_404(Estacion, id=id)
+    if request.method == 'POST':
+        form = EstacionForm(request.POST, instance=estacion)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = EstacionForm(instance=estacion)
+    
+    return render(request, 'editar_estacion.html', {'form': form})
+
+
+@login_required
+def eliminar_estacion_view(request, id):
+    estacion = get_object_or_404(Estacion, id=id)
+    estacion.delete()
+    return redirect('home')
 
 @login_required 
 def panel_view(request):

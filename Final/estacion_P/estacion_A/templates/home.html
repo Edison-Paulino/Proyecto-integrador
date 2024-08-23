@@ -100,6 +100,17 @@
         .station .buttons a:hover {
             background-color: #4685ff;
         }
+        .delete-button {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: darkred;
+        }
         .create-station {
             background-color: #33537A;
             color: white;
@@ -140,8 +151,9 @@
                         <p>{{ estacion.descripcion }}</p>
                     </div>
                     <div class="buttons">
-                        <a href="#">Ver Datos</a>
-                        <a href="#">Administrar</a>
+                        <a href="{% url 'gen_me' %}">Ver Datos</a> <!-- Redirige a gen_me -->
+                        <a href="{% url 'editar_estacion' estacion.id %}">Administrar</a> <!-- Redirige a la página de edición -->
+                        <a href="{% url 'eliminar_estacion' estacion.id %}" class="delete-button" onclick="return confirm('¿Estás seguro de que quieres eliminar esta estación?')">Eliminar</a>
                     </div>
                 </div>
             {% empty %}
