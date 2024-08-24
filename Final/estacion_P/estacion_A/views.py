@@ -301,15 +301,19 @@ def exportar_csv(datos):
     response['Content-Disposition'] = 'attachment; filename="datos_estacion.csv"'
     writer = csv.writer(response)
     
-    # Escribir encabezados de las columnas según el sensor seleccionado
+    # Si existen datos, escribimos los encabezados de las columnas
     if datos.exists():
-        campos = list(datos.values().first().keys())
+        primer_dato = datos.first()
+        # Extraer los nombres de los campos de la clase DatosEstacion
+        campos = ['fecha', 'temperatura', 'presion', 'humedad', 'velocidad_viento', 'direccion_viento', 'pluvialidad']
         writer.writerow(campos)
         
+        # Escribir los valores de los datos
         for dato in datos:
-            writer.writerow([dato[field] for field in campos])
+            writer.writerow([getattr(dato, campo) for campo in campos])
 
     return response
+
 
 @login_required 
 def panel_view(request):
