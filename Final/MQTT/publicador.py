@@ -18,31 +18,36 @@ client.connect(broker_address, broker_port)
 def generar_datos(maquina_id):
     datos = {
         "idestacion": maquina_id,
-        "fecha" : str(datetime.now()), 
+        "fecha": datetime.now().isoformat(),  # Formato de fecha ISO 8601
         "temperatura": round(random.uniform(20.0, 40), 2),
-        "humedad" : round(random.uniform(50,100),2),
-        "presion": round(random.uniform(1000,1020), 2),
+        "humedad": round(random.uniform(50, 100), 2),
+        "presion": round(random.uniform(1000, 1020), 2),
         "velocidad_viento": round(random.uniform(0, 70), 2),
-        "direccion_viento": round(random.uniform(0,360),2),
-        "pluvialidad" : round(random.uniform(3,5),2)
+        "direccion_viento": round(random.uniform(0, 360), 2),
+        "pluvialidad": round(random.uniform(3, 5), 2)
     }
     return datos
 
 # Publicación de datos
-def publicar_datos():
+def publicar_datos(espera=3, qos=1, retain=False):  # Intervalo configurable, QoS y Retain configurables
     num_maquinas = 5
     while True:
         for maquina_id in range(101, 101 + num_maquinas):
             datos = generar_datos(maquina_id)
             topic = topic_root + str(maquina_id) + topic_root2
-            client.publish(topic, json.dumps(datos),0,True)
-            print(f"Publicado en {topic}: {datos}")
-        time.sleep(3)  # Espera 3 segundos antes de generar los próximos datos
+            try:
+                # Publicar con el QoS y Retain configurables
+                client.publish(topic, json.dumps(datos), qos=qos, retain=retain)
+                print(f"Publicado en {topic} con QoS {qos}, Retain {retain}: {datos}")
+            except Exception as e:
+                print(f"Error al publicar en el tópico {topic}: {e}")
+        time.sleep(espera)  # Espera configurada entre publicaciones
 
 # Ejecución del publicador
 if __name__ == "__main__":
     try:
-        publicar_datos()
+        # Puedes modificar los valores de espera, QoS y retain al llamar a la función
+        publicar_datos(espera=5, qos=1, retain=False)  # Cambia los parámetros según tus necesidades
     except KeyboardInterrupt:
         print("Simulación terminada.")
         client.disconnect()

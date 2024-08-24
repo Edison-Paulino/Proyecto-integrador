@@ -2,29 +2,21 @@ import paho.mqtt.client as mqtt
 import json
 import pymysql
 from pymysql import OperationalError
-import django
-import os
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from datetime import datetime
+from websocket import create_connection
 
 # Configuración del broker MQTT
 broker_address = "test.mosquitto.org"
 broker_port = 1883
 topic_root = "estacion_g1/#"
+websocket_url = 'wss://itt363-1.smar.com.do/ws/estaciones/'
 
 # Configuración de la base de datos
 db_config = {
     'user': 'grupo1',
     'password': 'grupo1',
     'host': '192.168.100.151',
-    
     'database': 'estaciones_meteorologicas'
 }
-
-# Inicializar Django
-#os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Visual.Visual.settings')
-#django.setup()
 
 # Callback cuando se conecta al broker
 def on_connect(client, userdata, flags, rc):
@@ -57,6 +49,9 @@ def on_message(client, userdata, message):
 
             # Insertar datos en la base de datos
             insert_data(estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
+            
+            # Enviar los datos a través de WebSockets
+            enviar_a_websocket(estacion_id, fecha, temperatura, humedad, presion, velocidad_viento, direccion_viento, pluvialidad)
         else:
             print(f"El dato para la estación {estacion_id} con fecha {fecha} ya existe en la base de datos.")
     except json.JSONDecodeError as e:
@@ -104,6 +99,27 @@ def insert_data(estacion_id, fecha, temp, humedad, presion, velocidad, direccion
             cursor.close()
             connection.close()
 
+# Función para enviar datos al servidor WebSocket
+def enviar_a_websocket(estacion_id, fecha, temp, humedad, presion, velocidad, direccion, pluvialidad):
+    ws_data = {
+        "idestacion": estacion_id,
+        "fecha": fecha,
+        "temperatura": temp,
+        "humedad": humedad,
+        "presion": presion,
+        "velocidad_viento": velocidad,
+        "direccion_viento": direccion,
+        "pluvialidad": pluvialidad
+    }
+
+    try:
+        ws = create_connection(websocket_url)
+        ws.send(json.dumps(ws_data))
+        print(f"Datos enviados al WebSocket: {json.dumps(ws_data)}")
+        ws.close()
+    except Exception as e:
+        print(f"Error al conectar o enviar datos al WebSocket: {e}")
+
 # Configuración del cliente MQTT
 client = mqtt.Client(protocol=mqtt.MQTTv311)
 client.on_connect = on_connect
@@ -120,3 +136,4 @@ try:
 except KeyboardInterrupt:
     print("Desconectando del broker MQTT...")
     client.disconnect()
+
