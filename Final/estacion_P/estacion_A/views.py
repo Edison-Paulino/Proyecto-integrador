@@ -291,10 +291,23 @@ def exportar_view(request):
     return render(request, 'exportar.html', {'form': form, 'estaciones': estaciones})
 
 def exportar_json(datos):
-    data = list(datos.values())
+    # Convertimos cada objeto de datos en un diccionario y formateamos el campo de fecha
+    data = []
+    for dato in datos:
+        data.append({
+            'fecha': dato.fecha.strftime("%Y-%m-%d %H:%M:%S"),  # Convertimos datetime a cadena
+            'temperatura': dato.temperatura,
+            'presion': dato.presion,
+            'humedad': dato.humedad,
+            'velocidad_viento': dato.velocidad_viento,
+            'direccion_viento': dato.direccion_viento,
+            'pluvialidad': dato.pluvialidad
+        })
+
     response = HttpResponse(json.dumps(data, indent=4), content_type='application/json')
     response['Content-Disposition'] = 'attachment; filename="datos_estacion.json"'
     return response
+
 
 def exportar_csv(datos):
     response = HttpResponse(content_type='text/csv')
