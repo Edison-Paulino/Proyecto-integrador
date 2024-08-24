@@ -53,9 +53,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
             padding: 40px;
             color: white;
+            text-align: center;
         }
         .content h1 {
             font-size: 36px;
@@ -100,6 +100,17 @@
         .station .buttons a:hover {
             background-color: #4685ff;
         }
+        .delete-button {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: darkred;
+        }
         .create-station {
             background-color: #33537A;
             color: white;
@@ -120,7 +131,12 @@
         <!-- Cambiamos el perfil por el nombre de usuario -->
         <h2><a href="{% url 'profile' %}">{{ user.username|upper }}</a></h2>
         <a href="{% url 'home' %}">INICIO</a>
-        <a href="/alertas/">ALERTAS</a>
+        <a href="{% url 'alertas' %}">
+            ALERTAS 
+            {% if alertas_activas > 0 %}
+                <span class="alert-badge">{{ alertas_activas }}</span>
+            {% endif %}
+        </a>        
         <a href="/exportar/">EXPORTAR</a>
         <a href="{% url 'logout' %}" onclick="return confirm('¿Estás seguro de que quieres salir?')">SALIR</a>
     </div>
@@ -140,8 +156,9 @@
                         <p>{{ estacion.descripcion }}</p>
                     </div>
                     <div class="buttons">
-                        <a href="#">Ver Datos</a>
-                        <a href="#">Administrar</a>
+                        <a href="{% url 'gen_me' %}">Ver Datos</a> <!-- Redirige a gen_me -->
+                        <a href="{% url 'editar_estacion' estacion.id %}">Administrar</a> <!-- Redirige a la página de edición -->
+                        <a href="{% url 'eliminar_estacion' estacion.id %}" class="delete-button" onclick="return confirm('¿Estás seguro de que quieres eliminar esta estación?')">Eliminar</a>
                     </div>
                 </div>
             {% empty %}
@@ -150,28 +167,30 @@
             
             <a href="{% url 'crear_estacion' %}" class="create-station">CREAR ESTACIÓN</a>
         </div>
+        
     </div>
 
-    <!-- JavaScript para actualizar la fecha y la hora -->
-    <script>
-        function actualizarFechaHora() {
-            const fechaHoraElement = document.getElementById('fecha_hora');
-            const now = new Date();
-            const opciones = { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                second: '2-digit',
-                hour12: true 
-            };
-            const fechaHoraString = now.toLocaleString('es-ES', opciones);
-            fechaHoraElement.textContent = fechaHoraString;
-        }
+<!-- JavaScript para actualizar la fecha y la hora -->
+<script>
+    function actualizarFechaHora() {
+        const fechaHoraElement = document.getElementById('fecha_hora');
+        const now = new Date();
+        const opciones = { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: true 
+        };
+        const fechaHoraString = now.toLocaleString('es-ES', opciones);
+        fechaHoraElement.textContent = fechaHoraString;
+    }
 
-        // Actualiza la fecha y hora cada segundo
-        setInterval(actualizarFechaHora, 1000);
-    </script>
+    // Actualiza la fecha y hora cada segundo
+    setInterval(actualizarFechaHora, 1000);
+</script>
+    
 </body>
 </html>
