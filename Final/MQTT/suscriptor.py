@@ -8,7 +8,7 @@ from websocket import create_connection
 broker_address = "test.mosquitto.org"
 broker_port = 1883
 topic_root = "estacion_g1/#"
-websocket_url = 'wss://itt363-1.smar.com.do/ws/estaciones/'
+websocket_url = 'ws://itt363-1.smar.com.do/ws/estaciones/'
 
 # Configuración de la base de datos
 db_config = {
