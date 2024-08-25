@@ -151,7 +151,7 @@
 
 <script>
     // Conectar al WebSocket en el servidor
-    const ws = new WebSocket('wss://itt363-1.smar.com.do/ws/estaciones/');
+    var socket = new WebSocket('wss://' + window.location.host + '/ws/estaciones/');
 
     ws.onopen = function () {
         console.log('WebSocket conectado.');
