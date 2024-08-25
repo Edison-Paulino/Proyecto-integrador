@@ -150,25 +150,25 @@
 </body>
 
 <script>
-    // Conectar al WebSocket en el servidor
+    // Cambia de ws:// a wss:// para el WebSocket seguro
     var socket = new WebSocket('wss://' + window.location.host + '/ws/estaciones/');
 
-    ws.onopen = function () {
-        console.log('WebSocket conectado.');
+    socket.onopen = function(e) {
+        console.log('WebSocket conectado correctamente.');
     };
 
-    ws.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+    socket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
         console.log('Mensaje recibido:', data);
         // Aquí puedes actualizar los datos en tu página
     };
 
-    ws.onclose = function () {
-        console.log('WebSocket desconectado.');
+    socket.onclose = function(e) {
+        console.error('WebSocket cerrado.');
     };
 
-    ws.onerror = function (error) {
-        console.log('WebSocket error:', error);
+    socket.onerror = function(e) {
+        console.error('WebSocket error:', e);
     };
 </script>
 </body>
