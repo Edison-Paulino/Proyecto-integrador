@@ -150,27 +150,50 @@
 </body>
 
 <script>
-    // Cambia de ws:// a wss:// para el WebSocket seguro
-    var socket = new WebSocket('wss://' + window.location.host + '/ws/estaciones/');
+    var socketEstacion = new WebSocket('wss://' + window.location.host + '/ws/estaciones/');
+    var socketAlertas = new WebSocket('wss://' + window.location.host + '/ws/alertas/');
 
-    socket.onopen = function(e) {
-        console.log('WebSocket conectado correctamente.');
+    socketEstacion.onopen = function(e) {
+        console.log('WebSocket de estaciones conectado.');
     };
 
-    socket.onmessage = function(e) {
+    socketEstacion.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        console.log('Mensaje recibido:', data);
-        // Aquí puedes actualizar los datos en tu página
+        console.log('Datos recibidos de la estación:', data);
+        // Aquí puedes actualizar la tabla con los datos recibidos
+        const tableBody = document.getElementById('datos-table-body');
+        const newRow = `<tr>
+            <td>${data.temperatura}</td>
+            <td>${data.presion}</td>
+            <td>${data.velocidad_viento}</td>
+            <td>${data.direccion_viento}</td>
+            <td>${data.humedad}</td>
+            <td>${data.pluvialidad}</td>
+            <td>${data.fecha}</td>
+        </tr>`;
+        tableBody.insertAdjacentHTML('afterbegin', newRow);
     };
 
-    socket.onclose = function(e) {
-        console.error('WebSocket cerrado.');
+    socketEstacion.onclose = function(e) {
+        console.log('WebSocket de estaciones cerrado.');
     };
 
-    socket.onerror = function(e) {
-        console.error('WebSocket error:', e);
+    socketAlertas.onopen = function(e) {
+        console.log('WebSocket de alertas conectado.');
+    };
+
+    socketAlertas.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        console.log('Alerta recibida:', data.message);
+        // Aquí puedes mostrar las alertas de estaciones inactivas
+        alert(data.message);
+    };
+
+    socketAlertas.onclose = function(e) {
+        console.log('WebSocket de alertas cerrado.');
     };
 </script>
+
 </body>
 
 </html>

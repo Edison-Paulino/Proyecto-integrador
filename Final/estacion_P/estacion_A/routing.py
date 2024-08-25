@@ -1,6 +1,7 @@
 from django.urls import path
-from . import consumers  # Asegúrate de crear el archivo consumers.py para manejar WebSockets
+from .consumers import EstacionConsumer, AlertaEstacionConsumer
 
 websocket_urlpatterns = [
-    path('ws/estaciones/', consumers.EstacionConsumer.as_asgi()),
+    path('ws/estaciones/', EstacionConsumer.as_asgi()),
+    path('ws/alertas/', AlertaEstacionConsumer.as_asgi()),
 ]
