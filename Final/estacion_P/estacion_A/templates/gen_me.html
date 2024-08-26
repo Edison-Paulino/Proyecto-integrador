@@ -149,51 +149,6 @@
     </div>
 </body>
 
-<script>
-    var socketEstacion = new WebSocket('wss://' + window.location.host + '/ws/estaciones/');
-    var socketAlertas = new WebSocket('wss://' + window.location.host + '/ws/alertas/');
-
-    socketEstacion.onopen = function(e) {
-        console.log('WebSocket de estaciones conectado.');
-    };
-
-    socketEstacion.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        console.log('Datos recibidos de la estación:', data);
-        // Aquí puedes actualizar la tabla con los datos recibidos
-        const tableBody = document.getElementById('datos-table-body');
-        const newRow = `<tr>
-            <td>${data.temperatura}</td>
-            <td>${data.presion}</td>
-            <td>${data.velocidad_viento}</td>
-            <td>${data.direccion_viento}</td>
-            <td>${data.humedad}</td>
-            <td>${data.pluvialidad}</td>
-            <td>${data.fecha}</td>
-        </tr>`;
-        tableBody.insertAdjacentHTML('afterbegin', newRow);
-    };
-
-    socketEstacion.onclose = function(e) {
-        console.log('WebSocket de estaciones cerrado.');
-    };
-
-    socketAlertas.onopen = function(e) {
-        console.log('WebSocket de alertas conectado.');
-    };
-
-    socketAlertas.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        console.log('Alerta recibida:', data.message);
-        // Aquí puedes mostrar las alertas de estaciones inactivas
-        alert(data.message);
-    };
-
-    socketAlertas.onclose = function(e) {
-        console.log('WebSocket de alertas cerrado.');
-    };
-</script>
-
 </body>
 
 </html>
