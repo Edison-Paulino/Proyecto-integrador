@@ -21,6 +21,7 @@ import json
 import csv
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.utils.timezone import localtime
 
 def login_view(request):
     error_message = None
@@ -86,10 +87,17 @@ def obtener_datos(request):
     datos = DatosEstacion.objects.order_by('-fecha')[:20]
     
     # Convertir los datos a un formato que pueda ser enviado como JSON
-    datos_list = list(datos.values(
-        'temperatura', 'presion', 'velocidad_viento', 
-        'direccion_viento', 'humedad', 'pluvialidad', 'fecha'
-    ))
+    datos_list = []
+    for dato in datos:
+        datos_list.append({
+            'temperatura': dato.temperatura,
+            'presion': dato.presion,
+            'velocidad_viento': dato.velocidad_viento,
+            'direccion_viento': dato.direccion_viento,
+            'humedad': dato.humedad,
+            'pluvialidad': dato.pluvialidad,
+            'fecha': localtime(dato.fecha),  # Convertir a la hora local
+        })
     
     return JsonResponse(datos_list, safe=False)
 
