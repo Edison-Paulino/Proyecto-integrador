@@ -20,7 +20,7 @@ from .forms import ExportForm
 import json
 import csv
 from django.template.loader import render_to_string
-
+from django.http import JsonResponse
 
 def login_view(request):
     error_message = None
@@ -80,6 +80,18 @@ def edit_profile_view(request):
         'user_form': user_form,
         'password_form': password_form
     })
+
+def obtener_datos(request):
+    # Obtener los últimos 20 datos de la estación
+    datos = DatosEstacion.objects.order_by('-fecha')[:20]
+    
+    # Convertir los datos a un formato que pueda ser enviado como JSON
+    datos_list = list(datos.values(
+        'temperatura', 'presion', 'velocidad_viento', 
+        'direccion_viento', 'humedad', 'pluvialidad', 'fecha'
+    ))
+    
+    return JsonResponse(datos_list, safe=False)
 
 @login_required
 def home_view(request):
