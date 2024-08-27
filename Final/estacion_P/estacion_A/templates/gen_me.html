@@ -146,6 +146,41 @@
                 <a href="?page={{ page_obj.paginator.num_pages }}&registros={{ registros_por_pagina }}">ULTIMA</a>
             {% endif %}
         </div>
+        
+        <script>
+            // Función que hace una solicitud al servidor para obtener los datos más recientes
+            function actualizarDatos() {
+                fetch('/api/obtener-datos/')
+                    .then(response => response.json())  // Convertir la respuesta a JSON
+                    .then(datos => {
+                        const tbody = document.querySelector('tbody');  // Seleccionar la tabla
+                        tbody.innerHTML = '';  // Vaciar el contenido actual de la tabla
+        
+                        // Iterar sobre los datos recibidos y generar filas en la tabla
+                        datos.forEach(dato => {
+                            const row = `<tr>
+                                <td>${dato.temperatura}</td>
+                                <td>${dato.presion}</td>
+                                <td>${dato.velocidad_viento}</td>
+                                <td>${dato.direccion_viento}</td>
+                                <td>${dato.humedad}</td>
+                                <td>${dato.pluvialidad}</td>
+                                <td>${new Date(dato.fecha).toLocaleString()}</td>
+                            </tr>`;
+                            tbody.innerHTML += row;  // Agregar cada fila a la tabla
+                        });
+                    })
+                    .catch(error => console.error('Error al obtener los datos:', error));
+            }
+        
+            // Ejecutar la función por primera vez al cargar la página
+            actualizarDatos();
+        
+            // Configurar para que se actualicen los datos cada 5 segundos (5000 milisegundos)
+            setInterval(actualizarDatos, 5000);
+        </script>
+        
+
     </div>
 </body>
 
