@@ -122,7 +122,7 @@
                     <td>{{ dato.direccion_viento }}</td>
                     <td>{{ dato.humedad }}</td>
                     <td>{{ dato.pluvialidad }}</td>
-                    <td>{{ dato.fecha }}</td>
+                    <td>{{ dato.fecha|localtime }}</td>
                 </tr>
                 {% empty %}
                 <tr>
