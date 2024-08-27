@@ -149,29 +149,45 @@
         
         <script>
             // Función que hace una solicitud al servidor para obtener los datos más recientes
-            function actualizarDatos() {
-                fetch('/api/obtener-datos/')
-                    .then(response => response.json())  // Convertir la respuesta a JSON
-                    .then(datos => {
-                        const tbody = document.querySelector('tbody');  // Seleccionar la tabla
-                        tbody.innerHTML = '';  // Vaciar el contenido actual de la tabla
-        
-                        // Iterar sobre los datos recibidos y generar filas en la tabla
-                        datos.forEach(dato => {
-                            const row = `<tr>
-                                <td>${dato.temperatura}</td>
-                                <td>${dato.presion}</td>
-                                <td>${dato.velocidad_viento}</td>
-                                <td>${dato.direccion_viento}</td>
-                                <td>${dato.humedad}</td>
-                                <td>${dato.pluvialidad}</td>
-                                <td>${new Date(dato.fecha).toLocaleString()}</td>
-                            </tr>`;
-                            tbody.innerHTML += row;  // Agregar cada fila a la tabla
-                        });
-                    })
-                    .catch(error => console.error('Error al obtener los datos:', error));
-            }
+            fetch('/api/obtener-datos/')
+    .then(response => response.json())
+    .then(datos => {
+        const tbody = document.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        datos.forEach(dato => {
+            let fechaOriginal = new Date(dato.fecha);
+            
+            // Sumar 4 horas a la fecha original
+            fechaOriginal.setHours(fechaOriginal.getHours() + 4);
+
+            // Formatear la fecha resultante con PM/AM
+            const opciones = { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit',
+                hour12: true  // Para mostrar AM/PM
+            };
+            const fechaModificada = fechaOriginal.toLocaleString('es-ES', opciones);
+
+            // Crear la fila con los datos
+            const row = `<tr>
+                <td>${dato.temperatura}</td>
+                <td>${dato.presion}</td>
+                <td>${dato.velocidad_viento}</td>
+                <td>${dato.direccion_viento}</td>
+                <td>${dato.humedad}</td>
+                <td>${dato.pluvialidad}</td>
+                <td>${fechaModificada}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    })
+    .catch(error => console.error('Error al obtener los datos:', error));
+
         
             // Ejecutar la función por primera vez al cargar la página
             actualizarDatos();
