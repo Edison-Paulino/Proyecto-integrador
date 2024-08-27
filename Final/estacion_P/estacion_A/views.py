@@ -96,9 +96,9 @@ def obtener_datos(request):
             'direccion_viento': dato.direccion_viento,
             'humedad': dato.humedad,
             'pluvialidad': dato.pluvialidad,
-            'fecha': localtime(dato.fecha),  # Convertir a la hora local
+            'fecha': dato.fecha,  # Convertir a la hora local
         })
-    
+        
     return JsonResponse(datos_list, safe=False)
 
 @login_required
