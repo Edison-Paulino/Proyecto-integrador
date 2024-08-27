@@ -22,6 +22,8 @@ import csv
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.utils.timezone import localtime
+from datetime import timedelta
+from django.utils import timezone
 
 def login_view(request):
     error_message = None
@@ -98,7 +100,7 @@ def obtener_datos(request):
             'pluvialidad': dato.pluvialidad,
             'fecha': dato.fecha,  # Convertir a la hora local
         })
-        
+
     return JsonResponse(datos_list, safe=False)
 
 @login_required
@@ -213,7 +215,7 @@ def verificar_conexion_estacion():
     ultima_lectura = DatosEstacion.objects.order_by('-fecha').first()
     
     if ultima_lectura:
-        tiempo_actual = timezone.now()
+        tiempo_actual = timezone.now() + timedelta(hours=4)  # Sumar 4 horas al tiempo actual
         tiempo_lectura = ultima_lectura.fecha
 
         # Si han pasado más de 2 minutos desde la última lectura
